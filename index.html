@@ -37,6 +37,8 @@
             --btn-download-hover: #6d28d9;
             --btn-danger: #dc2626;
             --btn-danger-hover: #b91c1c;
+            --btn-warning: #d97706;
+            --btn-warning-hover: #b45309;
             --icon-color: #2563eb;
             --badge-bg: rgba(5, 150, 105, 0.08);
             --badge-color: #047857;
@@ -48,6 +50,9 @@
             --modal-overlay: rgba(0, 0, 0, 0.5);
             --modal-bg: white;
             --modal-text: #1a1e2b;
+            --blocked-bg: rgba(220, 38, 38, 0.08);
+            --blocked-border: rgba(220, 38, 38, 0.15);
+            --blocked-text: #dc2626;
         }
 
         [data-theme="dark"] {
@@ -73,6 +78,8 @@
             --btn-download-hover: #7c3aed;
             --btn-danger: #ef4444;
             --btn-danger-hover: #dc2626;
+            --btn-warning: #f59e0b;
+            --btn-warning-hover: #d97706;
             --icon-color: #60a5fa;
             --badge-bg: rgba(16, 185, 129, 0.12);
             --badge-color: #34d399;
@@ -83,6 +90,9 @@
             --modal-overlay: rgba(0, 0, 0, 0.7);
             --modal-bg: #1a1d27;
             --modal-text: #e8edf5;
+            --blocked-bg: rgba(239, 68, 68, 0.1);
+            --blocked-border: rgba(239, 68, 68, 0.2);
+            --blocked-text: #ef4444;
         }
 
         body {
@@ -377,6 +387,21 @@
             transform: scale(0.95);
         }
 
+        .btn-warning {
+            background: var(--btn-warning);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 18px rgba(217, 119, 6, 0.2);
+            padding: 4px 12px;
+            font-size: 12px;
+            flex: 0 0 auto;
+        }
+
+        .btn-warning:hover {
+            background: var(--btn-warning-hover);
+            transform: scale(0.95);
+        }
+
         .btn-small {
             padding: 4px 12px;
             font-size: 12px;
@@ -506,7 +531,7 @@
             flex-direction: column;
             gap: 6px;
             margin-top: 6px;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
@@ -524,6 +549,17 @@
             transition: var(--transition);
         }
 
+        .wifi-device-item.blocked {
+            background: var(--blocked-bg);
+            border-color: var(--blocked-border);
+            opacity: 0.7;
+        }
+
+        .wifi-device-item.blocked .device-name {
+            color: var(--blocked-text);
+            text-decoration: line-through;
+        }
+
         .wifi-device-item .device-info {
             display: flex;
             align-items: center;
@@ -534,7 +570,6 @@
 
         .wifi-device-item .device-info i {
             font-size: 12px;
-            color: var(--btn-success);
             flex-shrink: 0;
         }
 
@@ -542,6 +577,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 500;
         }
 
         .wifi-device-item .device-info .device-signal {
@@ -554,6 +590,13 @@
             display: flex;
             gap: 4px;
             flex-shrink: 0;
+        }
+
+        .wifi-device-item .device-actions .btn {
+            padding: 3px 10px;
+            font-size: 11px;
+            flex: 0 0 auto;
+            min-width: 28px;
         }
 
         .wifi-device-count {
@@ -625,6 +668,16 @@
             padding: 2px 10px;
             border-radius: 30px;
             font-weight: 500;
+        }
+
+        .blocked-badge-text {
+            font-size: 9px;
+            background: var(--blocked-bg);
+            color: var(--blocked-text);
+            padding: 1px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid var(--blocked-border);
         }
 
         /* --- Modal de Permissão --- */
@@ -763,6 +816,11 @@
             }
             .modal-content {
                 padding: 24px 20px;
+            }
+            .wifi-device-item .device-actions .btn {
+                padding: 2px 8px;
+                font-size: 10px;
+                min-width: 24px;
             }
         }
 
@@ -998,17 +1056,19 @@
                 } while (usedNames.has(name) && attempts < 20);
                 
                 usedNames.add(name);
-                const status = Math.random() > 0.15 ? 'connected' : 'idle';
+                const status = Math.random() > 0.2 ? 'connected' : 'idle';
                 const signal = Math.floor(Math.random() * 40) + 60;
                 const mac = generateRandomMac();
+                const isBlocked = Math.random() > 0.85; // 15% de chance de estar bloqueado
                 
                 devices.push({
                     id: 'dev_' + Date.now() + '_' + i,
                     name: name + (Math.random() > 0.7 ? ' 2' : ''),
-                    status: status,
+                    status: isBlocked ? 'blocked' : status,
                     signal: signal,
                     mac: mac,
-                    connectedAt: new Date().toISOString()
+                    connectedAt: status === 'connected' ? new Date().toISOString() : null,
+                    blocked: isBlocked
                 });
             }
             return devices;
@@ -1083,14 +1143,20 @@
         // --- Aceitar conexão ---
         window.approveConnection = function() {
             if (pendingDevice) {
-                // Adicionar dispositivo à lista
+                // Verificar se o dispositivo não está bloqueado
+                if (pendingDevice.blocked) {
+                    showNotification(`⛔ ${pendingDevice.name} está bloqueado e não pode conectar.`, 'error');
+                    pendingDevice = null;
+                    permissionModal.classList.remove('active');
+                    return;
+                }
+                
                 pendingDevice.status = 'connected';
                 pendingDevice.connectedAt = new Date().toISOString();
                 wifiDevices.push(pendingDevice);
                 saveWifiDevices(wifiDevices);
                 updateWifiDisplay();
                 
-                // Mostrar notificação
                 showNotification(`✅ ${pendingDevice.name} conectado à rede!`, 'success');
                 pendingDevice = null;
             }
@@ -1109,13 +1175,21 @@
         // --- Notificação simples ---
         function showNotification(message, type) {
             const badge = document.createElement('div');
+            const isError = type === 'error';
+            const isWarning = type === 'warning';
+            
+            let bgColor;
+            if (isError) bgColor = 'var(--btn-danger)';
+            else if (isWarning) bgColor = 'var(--btn-warning)';
+            else bgColor = 'var(--btn-success)';
+            
             badge.style.cssText = `
                 position: fixed;
                 bottom: 20px;
                 right: 20px;
                 padding: 12px 24px;
                 border-radius: 16px;
-                background: ${type === 'success' ? 'var(--btn-success)' : 'var(--btn-danger)'};
+                background: ${bgColor};
                 color: white;
                 font-weight: 500;
                 font-size: 14px;
@@ -1135,6 +1209,33 @@
             }, 3000);
         }
 
+        // --- Bloquear/Desbloquear dispositivo ---
+        window.toggleBlockDevice = function(deviceId) {
+            const device = wifiDevices.find(d => d.id === deviceId);
+            if (!device) return;
+
+            if (device.blocked) {
+                // Desbloquear
+                if (confirm(`Deseja desbloquear "${device.name}"?`)) {
+                    device.blocked = false;
+                    device.status = 'idle';
+                    saveWifiDevices(wifiDevices);
+                    updateWifiDisplay();
+                    showNotification(`🔓 ${device.name} foi desbloqueado.`, 'success');
+                }
+            } else {
+                // Bloquear
+                if (confirm(`Deseja bloquear "${device.name}" permanentemente da rede?`)) {
+                    device.blocked = true;
+                    device.status = 'blocked';
+                    // Se estava conectado, desconectar também
+                    saveWifiDevices(wifiDevices);
+                    updateWifiDisplay();
+                    showNotification(`🔒 ${device.name} foi bloqueado da rede.`, 'warning');
+                }
+            }
+        };
+
         // --- Atualizar exibição dos dispositivos ---
         function updateWifiDisplay() {
             if (wifiDevices.length === 0) {
@@ -1147,38 +1248,67 @@
             }
 
             const connected = wifiDevices.filter(d => d.status === 'connected');
+            const blocked = wifiDevices.filter(d => d.blocked === true);
             const total = wifiDevices.length;
             
             let html = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
                     <span class="wifi-device-count">${connected.length} conectado${connected.length !== 1 ? 's' : ''}</span>
-                    <span style="font-size: 12px; color: var(--text-muted);">${total} total</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">
+                        ${total} total · ${blocked.length} bloqueado${blocked.length !== 1 ? 's' : ''}
+                    </span>
                 </div>
                 <div class="wifi-devices-grid">
             `;
 
             wifiDevices.forEach(device => {
-                const statusIcon = device.status === 'connected' ? 'fa-check-circle' : 'fa-clock';
-                const statusColor = device.status === 'connected' ? 'var(--btn-success)' : 'var(--text-muted)';
+                const isBlocked = device.blocked === true;
                 const isConnected = device.status === 'connected';
+                const isIdle = device.status === 'idle';
+                
+                let statusIcon;
+                let statusColor;
+                let statusText = '';
+                let itemClass = '';
+                
+                if (isBlocked) {
+                    statusIcon = 'fa-ban';
+                    statusColor = 'var(--btn-danger)';
+                    statusText = 'Bloqueado';
+                    itemClass = 'blocked';
+                } else if (isConnected) {
+                    statusIcon = 'fa-check-circle';
+                    statusColor = 'var(--btn-success)';
+                    statusText = 'Conectado';
+                } else {
+                    statusIcon = 'fa-clock';
+                    statusColor = 'var(--text-muted)';
+                    statusText = 'Ocioso';
+                }
                 
                 html += `
-                    <div class="wifi-device-item">
+                    <div class="wifi-device-item ${itemClass}">
                         <div class="device-info">
                             <i class="fas ${statusIcon}" style="color: ${statusColor};"></i>
                             <span class="device-name">${device.name}</span>
                             <span class="device-signal">${device.signal}%</span>
+                            ${isBlocked ? `<span class="blocked-badge-text">BLOQUEADO</span>` : ''}
                         </div>
                         <div class="device-actions">
-                            ${isConnected ? `
-                                <button class="btn btn-danger btn-small" onclick="disconnectDevice('${device.id}')" title="Desconectar">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            ` : `
-                                <button class="btn btn-success btn-small" onclick="reconnectDevice('${device.id}')" title="Reconectar">
-                                    <i class="fas fa-plug"></i>
-                                </button>
-                            `}
+                            ${!isBlocked ? `
+                                ${isConnected ? `
+                                    <button class="btn btn-danger btn-small" onclick="disconnectDevice('${device.id}')" title="Desconectar">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-success btn-small" onclick="reconnectDevice('${device.id}')" title="Reconectar">
+                                        <i class="fas fa-plug"></i>
+                                    </button>
+                                `}
+                            ` : ''}
+                            <button class="btn ${isBlocked ? 'btn-success' : 'btn-warning'} btn-small" onclick="toggleBlockDevice('${device.id}')" title="${isBlocked ? 'Desbloquear' : 'Bloquear'}">
+                                <i class="fas ${isBlocked ? 'fa-unlock' : 'fa-lock'}"></i>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -1206,25 +1336,28 @@
         window.reconnectDevice = function(deviceId) {
             const device = wifiDevices.find(d => d.id === deviceId);
             if (device && device.status === 'idle') {
-                // Simular pedido de permissão
+                if (device.blocked) {
+                    showNotification(`⛔ ${device.name} está bloqueado. Desbloqueie primeiro.`, 'error');
+                    return;
+                }
                 const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
                 showPermissionModal(device, ssid);
             }
         };
 
-        // --- Simular nova conexão (chamada periodicamente) ---
+        // --- Simular nova conexão ---
         function simulateNewConnection() {
             if (!isWifiTabActive) return;
             
-            // 20% de chance de um novo dispositivo tentar conectar
-            if (Math.random() < 0.2 && wifiDevices.length < 15) {
+            if (Math.random() < 0.15 && wifiDevices.length < 15) {
                 const newDevice = {
                     id: 'dev_new_' + Date.now(),
                     name: deviceNames[Math.floor(Math.random() * deviceNames.length)] + ' (novo)',
                     status: 'pending',
                     signal: Math.floor(Math.random() * 40) + 60,
                     mac: generateRandomMac(),
-                    connectedAt: null
+                    connectedAt: null,
+                    blocked: false
                 };
                 
                 const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
@@ -1239,7 +1372,6 @@
             saveWifiDevices(wifiDevices);
             updateWifiDisplay();
             
-            // Verificar permissão após atualizar
             const permissionEnabled = localStorage.getItem(PERMISSION_STORAGE_KEY) !== 'false';
             if (permissionEnabled) {
                 setTimeout(simulateNewConnection, 1000);
@@ -1507,14 +1639,12 @@
                 document.querySelector('#themeToggle i').className = 'fas fa-sun';
             }
 
-            // Atualizar Wi-Fi a cada 30 segundos
             setInterval(() => {
                 if (isWifiTabActive) {
                     refreshWifiDevices();
                 }
             }, 30000);
 
-            // Atualizar timestamp a cada 10 segundos
             setInterval(() => {
                 if (isWifiTabActive && lastUpdateTime) {
                     updateTimestamp();
@@ -1522,7 +1652,6 @@
             }, 10000);
         });
 
-        // Expor funções para o escopo global
         window.refreshWifiDevices = function() {
             if (!isWifiTabActive) return;
             
@@ -1538,7 +1667,6 @@
             }, 800 + Math.random() * 600);
         };
 
-        // Inicializar permissão como ativa por padrão
         if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
             localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
         }
