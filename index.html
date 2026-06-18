@@ -53,6 +53,7 @@
             --blocked-bg: rgba(220, 38, 38, 0.08);
             --blocked-border: rgba(220, 38, 38, 0.15);
             --blocked-text: #dc2626;
+            --network-card-bg: rgba(255, 255, 255, 0.4);
         }
 
         [data-theme="dark"] {
@@ -93,6 +94,7 @@
             --blocked-bg: rgba(239, 68, 68, 0.1);
             --blocked-border: rgba(239, 68, 68, 0.2);
             --blocked-text: #ef4444;
+            --network-card-bg: rgba(42, 47, 66, 0.5);
         }
 
         body {
@@ -408,6 +410,12 @@
             flex: 0 0 auto;
         }
 
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            flex: 0 0 auto;
+        }
+
         .qr-panel {
             display: flex;
             flex-direction: column;
@@ -494,7 +502,106 @@
             flex-wrap: wrap;
         }
 
-        /* --- Wi-Fi Info --- */
+        /* --- Wi-Fi Networks --- */
+        .wifi-networks-section {
+            margin-bottom: 16px;
+        }
+
+        .wifi-networks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .wifi-network-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--network-card-bg);
+            padding: 8px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--input-border);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .wifi-network-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .wifi-network-item.active {
+            border-color: var(--btn-primary);
+            background: var(--wifi-info-bg);
+        }
+
+        .wifi-network-item .network-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wifi-network-item .network-info i {
+            color: var(--icon-color);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .wifi-network-item .network-info .network-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wifi-network-item .network-info .network-details {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .wifi-network-item .network-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .wifi-network-item .network-actions .btn {
+            padding: 2px 8px;
+            font-size: 10px;
+            flex: 0 0 auto;
+            min-width: 20px;
+        }
+
+        .add-network-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px;
+            border: 2px dashed var(--input-border);
+            border-radius: 16px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-network-btn:hover {
+            border-color: var(--btn-primary);
+            color: var(--btn-primary);
+            background: var(--wifi-info-bg);
+        }
+
+        /* --- Wi-Fi Info Container --- */
         .wifi-info-container {
             margin-top: 16px;
             padding: 14px 18px;
@@ -680,7 +787,16 @@
             border: 1px solid var(--blocked-border);
         }
 
-        /* --- Modal de Permissão --- */
+        .network-active-badge {
+            font-size: 9px;
+            background: var(--badge-bg);
+            color: var(--badge-color);
+            padding: 1px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* --- Modal de Adicionar Rede --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -792,6 +908,37 @@
             margin-bottom: 12px;
         }
 
+        .modal-input-group {
+            margin-bottom: 14px;
+        }
+
+        .modal-input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .modal-input-group input,
+        .modal-input-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 16px;
+            background: var(--input-bg);
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .modal-input-group input:focus,
+        .modal-input-group select:focus {
+            border-color: var(--btn-primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+        }
+
         @media (max-width: 800px) {
             .app-container {
                 padding: 24px 16px;
@@ -821,6 +968,14 @@
                 padding: 2px 8px;
                 font-size: 10px;
                 min-width: 24px;
+            }
+            .wifi-network-item {
+                flex-wrap: wrap;
+            }
+            .wifi-network-item .network-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 4px;
             }
         }
 
@@ -893,6 +1048,19 @@
             </div>
 
             <div id="wifiTab" class="tab-content hidden">
+                <!-- Redes Wi-Fi Salvas -->
+                <div class="wifi-networks-section">
+                    <label style="font-size: 14px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
+                        <i class="fas fa-network-wired"></i> Redes Salvas
+                    </label>
+                    <div class="wifi-networks-list" id="wifiNetworksList">
+                        <!-- Redes serão inseridas aqui via JavaScript -->
+                    </div>
+                    <button class="add-network-btn" onclick="showAddNetworkModal()">
+                        <i class="fas fa-plus-circle"></i> Adicionar Nova Rede
+                    </button>
+                </div>
+
                 <div class="input-group">
                     <label>Nome da Rede (SSID)</label>
                     <div class="field-with-icon">
@@ -920,6 +1088,7 @@
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                    <button class="btn btn-success" onclick="saveCurrentNetwork()"><i class="fas fa-save"></i> Salvar Rede</button>
                     <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
                 </div>
             </div>
@@ -999,6 +1168,43 @@
     </div>
 </div>
 
+<!-- Modal de Adicionar Rede -->
+<div class="modal-overlay" id="addNetworkModal">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <i class="fas fa-plus-circle"></i>
+        </div>
+        <h2>Adicionar Nova Rede Wi-Fi</h2>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Salve uma nova rede para gerenciar dispositivos conectados.</p>
+        
+        <div class="modal-input-group">
+            <label>Nome da Rede (SSID) <span style="color: var(--btn-danger);">*</span></label>
+            <input type="text" id="newNetworkSSID" placeholder="Ex: Minha Rede 5G">
+        </div>
+        <div class="modal-input-group">
+            <label>Senha</label>
+            <input type="text" id="newNetworkPassword" placeholder="Digite a senha da rede">
+        </div>
+        <div class="modal-input-group">
+            <label>Tipo de Segurança</label>
+            <select id="newNetworkSecurity">
+                <option value="WPA" selected>WPA/WPA2</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">Sem senha (nopass)</option>
+            </select>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn btn-reject" onclick="closeAddNetworkModal()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button class="btn btn-approve" onclick="saveNewNetwork()">
+                <i class="fas fa-save"></i> Salvar Rede
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     (function() {
         "use strict";
@@ -1011,6 +1217,8 @@
         const wifiDevicesContent = document.getElementById('wifiDevicesContent');
         const wifiTimestamp = document.getElementById('wifiTimestamp');
         const permissionModal = document.getElementById('permissionModal');
+        const addNetworkModal = document.getElementById('addNetworkModal');
+        const wifiNetworksList = document.getElementById('wifiNetworksList');
 
         let currentTab = 'url';
         let currentTheme = 'light';
@@ -1019,8 +1227,12 @@
         let isWifiTabActive = false;
         let lastUpdateTime = null;
         let pendingDevice = null;
+        let savedNetworks = [];
+        let activeNetworkId = null;
 
         const WIFI_STORAGE_KEY = 'wifi_devices_saved';
+        const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
+        const ACTIVE_NETWORK_KEY = 'wifi_active_network';
         const PERMISSION_STORAGE_KEY = 'wifi_permission_enabled';
 
         // Nomes de dispositivos simulados
@@ -1036,6 +1248,243 @@
             'BB:CC:DD:EE:FF:01', 'BB:CC:DD:EE:FF:02', 'CC:DD:EE:FF:00:01',
             'DD:EE:FF:00:11:01', 'EE:FF:00:11:22:01', 'FF:00:11:22:33:01'
         ];
+
+        // --- Carregar redes salvas ---
+        function loadSavedNetworks() {
+            try {
+                const saved = localStorage.getItem(NETWORKS_STORAGE_KEY);
+                if (saved) {
+                    savedNetworks = JSON.parse(saved);
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Erro ao carregar redes salvas:', e);
+            }
+            // Rede padrão
+            savedNetworks = [{
+                id: 'net_default',
+                ssid: 'Café Wi-Fi',
+                password: '12345678',
+                security: 'WPA',
+                createdAt: new Date().toISOString()
+            }];
+            saveNetworks();
+            return true;
+        }
+
+        // --- Salvar redes ---
+        function saveNetworks() {
+            try {
+                localStorage.setItem(NETWORKS_STORAGE_KEY, JSON.stringify(savedNetworks));
+            } catch (e) {
+                console.warn('Erro ao salvar redes:', e);
+            }
+        }
+
+        // --- Carregar rede ativa ---
+        function loadActiveNetwork() {
+            try {
+                const saved = localStorage.getItem(ACTIVE_NETWORK_KEY);
+                if (saved) {
+                    activeNetworkId = saved;
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Erro ao carregar rede ativa:', e);
+            }
+            if (savedNetworks.length > 0) {
+                activeNetworkId = savedNetworks[0].id;
+                localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
+            }
+            return false;
+        }
+
+        // --- Salvar rede ativa ---
+        function saveActiveNetwork() {
+            try {
+                if (activeNetworkId) {
+                    localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
+                }
+            } catch (e) {
+                console.warn('Erro ao salvar rede ativa:', e);
+            }
+        }
+
+        // --- Obter rede ativa ---
+        function getActiveNetwork() {
+            return savedNetworks.find(n => n.id === activeNetworkId) || savedNetworks[0];
+        }
+
+        // --- Aplicar rede ativa nos campos ---
+        function applyActiveNetwork() {
+            const network = getActiveNetwork();
+            if (network) {
+                document.getElementById('wifiSSID').value = network.ssid || '';
+                document.getElementById('wifiPassword').value = network.password || '';
+                document.getElementById('wifiSecurity').value = network.security || 'WPA';
+                renderNetworksList();
+                // Gerar QR automaticamente
+                setTimeout(generateFromCurrentTab, 100);
+            }
+        }
+
+        // --- Renderizar lista de redes ---
+        function renderNetworksList() {
+            if (savedNetworks.length === 0) {
+                wifiNetworksList.innerHTML = `
+                    <div style="color: var(--text-muted); font-size: 13px; padding: 8px; text-align: center;">
+                        <i class="fas fa-info-circle"></i> Nenhuma rede salva
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            savedNetworks.forEach(network => {
+                const isActive = network.id === activeNetworkId;
+                html += `
+                    <div class="wifi-network-item ${isActive ? 'active' : ''}" onclick="selectNetwork('${network.id}')">
+                        <div class="network-info">
+                            <i class="fas fa-wifi"></i>
+                            <span class="network-name">${network.ssid}</span>
+                            <span class="network-details">${network.security}</span>
+                            ${isActive ? `<span class="network-active-badge"><i class="fas fa-check"></i> ativa</span>` : ''}
+                        </div>
+                        <div class="network-actions">
+                            <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNetwork('${network.id}')" title="Excluir rede">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            wifiNetworksList.innerHTML = html;
+        }
+
+        // --- Selecionar rede ---
+        window.selectNetwork = function(networkId) {
+            const network = savedNetworks.find(n => n.id === networkId);
+            if (network) {
+                activeNetworkId = networkId;
+                saveActiveNetwork();
+                applyActiveNetwork();
+                showNotification(`📶 Rede "${network.ssid}" selecionada`, 'success');
+            }
+        };
+
+        // --- Salvar rede atual ---
+        window.saveCurrentNetwork = function() {
+            const ssid = document.getElementById('wifiSSID').value.trim();
+            const password = document.getElementById('wifiPassword').value.trim();
+            const security = document.getElementById('wifiSecurity').value;
+
+            if (!ssid) {
+                alert('Por favor, insira o nome da rede (SSID).');
+                return;
+            }
+
+            // Verificar se já existe
+            const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
+            if (existing) {
+                if (confirm(`A rede "${ssid}" já existe. Deseja atualizá-la?`)) {
+                    existing.password = password;
+                    existing.security = security;
+                    saveNetworks();
+                    renderNetworksList();
+                    showNotification(`✅ Rede "${ssid}" atualizada!`, 'success');
+                }
+                return;
+            }
+
+            const newNetwork = {
+                id: 'net_' + Date.now(),
+                ssid: ssid,
+                password: password,
+                security: security,
+                createdAt: new Date().toISOString()
+            };
+
+            savedNetworks.push(newNetwork);
+            saveNetworks();
+            activeNetworkId = newNetwork.id;
+            saveActiveNetwork();
+            renderNetworksList();
+            showNotification(`✅ Rede "${ssid}" salva com sucesso!`, 'success');
+        };
+
+        // --- Mostrar modal de adicionar rede ---
+        window.showAddNetworkModal = function() {
+            document.getElementById('newNetworkSSID').value = '';
+            document.getElementById('newNetworkPassword').value = '';
+            document.getElementById('newNetworkSecurity').value = 'WPA';
+            addNetworkModal.classList.add('active');
+        };
+
+        // --- Fechar modal de adicionar rede ---
+        window.closeAddNetworkModal = function() {
+            addNetworkModal.classList.remove('active');
+        };
+
+        // --- Salvar nova rede do modal ---
+        window.saveNewNetwork = function() {
+            const ssid = document.getElementById('newNetworkSSID').value.trim();
+            const password = document.getElementById('newNetworkPassword').value.trim();
+            const security = document.getElementById('newNetworkSecurity').value;
+
+            if (!ssid) {
+                alert('Por favor, insira o nome da rede (SSID).');
+                return;
+            }
+
+            // Verificar se já existe
+            const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
+            if (existing) {
+                alert(`A rede "${ssid}" já existe. Use a opção Salvar Rede para atualizá-la.`);
+                return;
+            }
+
+            const newNetwork = {
+                id: 'net_' + Date.now(),
+                ssid: ssid,
+                password: password,
+                security: security,
+                createdAt: new Date().toISOString()
+            };
+
+            savedNetworks.push(newNetwork);
+            saveNetworks();
+            activeNetworkId = newNetwork.id;
+            saveActiveNetwork();
+            renderNetworksList();
+            applyActiveNetwork();
+            closeAddNetworkModal();
+            showNotification(`✅ Rede "${ssid}" adicionada com sucesso!`, 'success');
+        };
+
+        // --- Excluir rede ---
+        window.deleteNetwork = function(networkId) {
+            const network = savedNetworks.find(n => n.id === networkId);
+            if (!network) return;
+
+            if (savedNetworks.length <= 1) {
+                alert('Não é possível excluir a última rede. Adicione outra rede primeiro.');
+                return;
+            }
+
+            if (confirm(`Deseja excluir a rede "${network.ssid}"?`)) {
+                savedNetworks = savedNetworks.filter(n => n.id !== networkId);
+                saveNetworks();
+                
+                if (activeNetworkId === networkId) {
+                    activeNetworkId = savedNetworks[0]?.id || null;
+                    saveActiveNetwork();
+                }
+                
+                renderNetworksList();
+                applyActiveNetwork();
+                showNotification(`🗑️ Rede "${network.ssid}" excluída.`, 'error');
+            }
+        };
 
         // --- Gerar MAC aleatório ---
         function generateRandomMac() {
@@ -1059,7 +1508,7 @@
                 const status = Math.random() > 0.2 ? 'connected' : 'idle';
                 const signal = Math.floor(Math.random() * 40) + 60;
                 const mac = generateRandomMac();
-                const isBlocked = Math.random() > 0.85; // 15% de chance de estar bloqueado
+                const isBlocked = Math.random() > 0.85;
                 
                 devices.push({
                     id: 'dev_' + Date.now() + '_' + i,
@@ -1079,7 +1528,8 @@
             try {
                 const data = {
                     devices: devices,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    networkId: activeNetworkId
                 };
                 localStorage.setItem(WIFI_STORAGE_KEY, JSON.stringify(data));
                 lastUpdateTime = new Date();
@@ -1096,11 +1546,14 @@
                 if (saved) {
                     const data = JSON.parse(saved);
                     if (data.devices && Array.isArray(data.devices) && data.devices.length > 0) {
-                        wifiDevices = data.devices;
-                        if (data.timestamp) {
-                            lastUpdateTime = new Date(data.timestamp);
+                        // Verificar se os dispositivos são da rede ativa
+                        if (data.networkId === activeNetworkId) {
+                            wifiDevices = data.devices;
+                            if (data.timestamp) {
+                                lastUpdateTime = new Date(data.timestamp);
+                            }
+                            return true;
                         }
-                        return true;
                     }
                 }
             } catch (e) {
@@ -1143,7 +1596,6 @@
         // --- Aceitar conexão ---
         window.approveConnection = function() {
             if (pendingDevice) {
-                // Verificar se o dispositivo não está bloqueado
                 if (pendingDevice.blocked) {
                     showNotification(`⛔ ${pendingDevice.name} está bloqueado e não pode conectar.`, 'error');
                     pendingDevice = null;
@@ -1215,7 +1667,6 @@
             if (!device) return;
 
             if (device.blocked) {
-                // Desbloquear
                 if (confirm(`Deseja desbloquear "${device.name}"?`)) {
                     device.blocked = false;
                     device.status = 'idle';
@@ -1224,11 +1675,9 @@
                     showNotification(`🔓 ${device.name} foi desbloqueado.`, 'success');
                 }
             } else {
-                // Bloquear
                 if (confirm(`Deseja bloquear "${device.name}" permanentemente da rede?`)) {
                     device.blocked = true;
                     device.status = 'blocked';
-                    // Se estava conectado, desconectar também
                     saveWifiDevices(wifiDevices);
                     updateWifiDisplay();
                     showNotification(`🔒 ${device.name} foi bloqueado da rede.`, 'warning');
@@ -1349,7 +1798,7 @@
         function simulateNewConnection() {
             if (!isWifiTabActive) return;
             
-            if (Math.random() < 0.15 && wifiDevices.length < 15) {
+            if (Math.random() < 0.12 && wifiDevices.length < 15) {
                 const newDevice = {
                     id: 'dev_new_' + Date.now(),
                     name: deviceNames[Math.floor(Math.random() * deviceNames.length)] + ' (novo)',
@@ -1445,6 +1894,11 @@
 
             if (tabId === 'wifi') {
                 toggleWifiInfo(true);
+                // Carregar redes e aplicar
+                loadSavedNetworks();
+                loadActiveNetwork();
+                renderNetworksList();
+                applyActiveNetwork();
             } else {
                 toggleWifiInfo(false);
             }
@@ -1626,6 +2080,10 @@
 
         // --- Inicialização ---
         window.addEventListener('DOMContentLoaded', function() {
+            // Inicializar redes
+            loadSavedNetworks();
+            loadActiveNetwork();
+            
             switchTab('url');
             setTimeout(() => {
                 generateFromCurrentTab();
@@ -1650,6 +2108,10 @@
                     updateTimestamp();
                 }
             }, 10000);
+
+            if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
+                localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
+            }
         });
 
         window.refreshWifiDevices = function() {
@@ -1667,9 +2129,11 @@
             }, 800 + Math.random() * 600);
         };
 
-        if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
-            localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
-        }
+        // Expor funções para o escopo global
+        window.loadSavedNetworks = loadSavedNetworks;
+        window.saveNetworks = saveNetworks;
+        window.renderNetworksList = renderNetworksList;
+        window.applyActiveNetwork = applyActiveNetwork;
 
     })();
 </script>
