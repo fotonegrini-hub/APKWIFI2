@@ -54,6 +54,8 @@
             --blocked-border: rgba(220, 38, 38, 0.15);
             --blocked-text: #dc2626;
             --network-card-bg: rgba(255, 255, 255, 0.4);
+            --qr-overlay-bg: rgba(255, 255, 255, 0.92);
+            --qr-overlay-border: rgba(0, 0, 0, 0.08);
         }
 
         [data-theme="dark"] {
@@ -95,6 +97,8 @@
             --blocked-border: rgba(239, 68, 68, 0.2);
             --blocked-text: #ef4444;
             --network-card-bg: rgba(42, 47, 66, 0.5);
+            --qr-overlay-bg: rgba(26, 29, 39, 0.92);
+            --qr-overlay-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -428,6 +432,7 @@
             border: 1px solid var(--border-color);
             min-height: 300px;
             transition: var(--transition);
+            position: relative;
         }
 
         #qrcode {
@@ -438,6 +443,7 @@
             display: inline-block;
             margin-bottom: 20px;
             transition: var(--transition);
+            position: relative;
         }
 
         #qrcode img, #qrcode canvas {
@@ -445,6 +451,56 @@
             width: 180px;
             height: 180px;
             border-radius: 16px;
+        }
+
+        /* Overlay do ícone no centro do QR Code */
+        .qr-icon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: var(--qr-overlay-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--qr-overlay-border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            pointer-events: none;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            transition: var(--transition);
+        }
+
+        .qr-icon-overlay i {
+            font-size: 24px;
+            color: var(--icon-color);
+        }
+
+        .qr-icon-overlay .fa-whatsapp {
+            color: #25D366;
+        }
+
+        .qr-icon-overlay .fa-instagram {
+            color: #E4405F;
+        }
+
+        .qr-icon-overlay .fa-facebook {
+            color: #1877F2;
+        }
+
+        .qr-icon-overlay .fa-youtube {
+            color: #FF0000;
+        }
+
+        .qr-icon-overlay .fa-wifi {
+            color: #3b82f6;
+        }
+
+        .qr-icon-overlay .fa-link {
+            color: var(--icon-color);
         }
 
         .qr-label {
@@ -977,6 +1033,13 @@
                 justify-content: flex-end;
                 margin-top: 4px;
             }
+            .qr-icon-overlay {
+                width: 36px;
+                height: 36px;
+            }
+            .qr-icon-overlay i {
+                font-size: 18px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -994,6 +1057,13 @@
             .wifi-device-item .device-actions {
                 width: 100%;
                 justify-content: flex-end;
+            }
+            .qr-icon-overlay {
+                width: 30px;
+                height: 30px;
+            }
+            .qr-icon-overlay i {
+                font-size: 15px;
             }
         }
     </style>
@@ -1016,6 +1086,9 @@
             <div class="tabs" id="tabHeaders">
                 <button class="tab-btn active" data-tab="urlTab"><i class="fas fa-link"></i> URL</button>
                 <button class="tab-btn" data-tab="whatsappTab"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="tab-btn" data-tab="instagramTab"><i class="fab fa-instagram"></i> Instagram</button>
+                <button class="tab-btn" data-tab="facebookTab"><i class="fab fa-facebook"></i> Facebook</button>
+                <button class="tab-btn" data-tab="youtubeTab"><i class="fab fa-youtube"></i> YouTube</button>
                 <button class="tab-btn" data-tab="wifiTab"><i class="fas fa-wifi"></i> Wi-Fi</button>
             </div>
 
@@ -1047,8 +1120,49 @@
                 </div>
             </div>
 
+            <div id="instagramTab" class="tab-content hidden">
+                <div class="input-group">
+                    <label><i class="fab fa-instagram"></i> Perfil do Instagram</label>
+                    <div class="field-with-icon">
+                        <i class="fas fa-at"></i>
+                        <input type="text" id="instagramInput" placeholder="usuario" value="exemplo_perfil">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                </div>
+            </div>
+
+            <div id="facebookTab" class="tab-content hidden">
+                <div class="input-group">
+                    <label><i class="fab fa-facebook"></i> Perfil/Página do Facebook</label>
+                    <div class="field-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="facebookInput" placeholder="usuario ou pagina" value="exemplo.pagina">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                </div>
+            </div>
+
+            <div id="youtubeTab" class="tab-content hidden">
+                <div class="input-group">
+                    <label><i class="fab fa-youtube"></i> Canal do YouTube</label>
+                    <div class="field-with-icon">
+                        <i class="fas fa-play"></i>
+                        <input type="text" id="youtubeInput" placeholder="ID do canal ou @usuario" value="UCExemplo123">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                </div>
+            </div>
+
             <div id="wifiTab" class="tab-content hidden">
-                <!-- Redes Wi-Fi Salvas -->
                 <div class="wifi-networks-section">
                     <label style="font-size: 14px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
                         <i class="fas fa-network-wired"></i> Redes Salvas
@@ -1099,7 +1213,9 @@
         </div>
 
         <div class="qr-panel">
-            <div id="qrcode"></div>
+            <div id="qrcode" style="position: relative;">
+                <!-- O overlay do ícone será inserido aqui via JavaScript -->
+            </div>
             <div class="qr-label" id="qrLabel">QR Code gerado</div>
             <div class="qr-sub" id="qrSub">Aguardando ação</div>
             <div id="testButtonContainer"></div>
@@ -1229,11 +1345,22 @@
         let pendingDevice = null;
         let savedNetworks = [];
         let activeNetworkId = null;
+        let currentIcon = null;
 
         const WIFI_STORAGE_KEY = 'wifi_devices_saved';
         const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
         const ACTIVE_NETWORK_KEY = 'wifi_active_network';
         const PERMISSION_STORAGE_KEY = 'wifi_permission_enabled';
+
+        // Mapeamento de ícones por tipo de conteúdo
+        const ICON_MAP = {
+            url: { icon: 'fa-link', color: 'var(--icon-color)' },
+            whatsapp: { icon: 'fa-whatsapp', color: '#25D366' },
+            instagram: { icon: 'fa-instagram', color: '#E4405F' },
+            facebook: { icon: 'fa-facebook', color: '#1877F2' },
+            youtube: { icon: 'fa-youtube', color: '#FF0000' },
+            wifi: { icon: 'fa-wifi', color: '#3b82f6' }
+        };
 
         // Nomes de dispositivos simulados
         const deviceNames = [
@@ -1260,7 +1387,6 @@
             } catch (e) {
                 console.warn('Erro ao carregar redes salvas:', e);
             }
-            // Rede padrão
             savedNetworks = [{
                 id: 'net_default',
                 ssid: 'Café Wi-Fi',
@@ -1323,7 +1449,6 @@
                 document.getElementById('wifiPassword').value = network.password || '';
                 document.getElementById('wifiSecurity').value = network.security || 'WPA';
                 renderNetworksList();
-                // Gerar QR automaticamente
                 setTimeout(generateFromCurrentTab, 100);
             }
         }
@@ -1383,7 +1508,6 @@
                 return;
             }
 
-            // Verificar se já existe
             const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
             if (existing) {
                 if (confirm(`A rede "${ssid}" já existe. Deseja atualizá-la?`)) {
@@ -1436,7 +1560,6 @@
                 return;
             }
 
-            // Verificar se já existe
             const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
             if (existing) {
                 alert(`A rede "${ssid}" já existe. Use a opção Salvar Rede para atualizá-la.`);
@@ -1546,7 +1669,6 @@
                 if (saved) {
                     const data = JSON.parse(saved);
                     if (data.devices && Array.isArray(data.devices) && data.devices.length > 0) {
-                        // Verificar se os dispositivos são da rede ativa
                         if (data.networkId === activeNetworkId) {
                             wifiDevices = data.devices;
                             if (data.timestamp) {
@@ -1872,6 +1994,9 @@
         const tabContents = {
             url: document.getElementById('urlTab'),
             whatsapp: document.getElementById('whatsappTab'),
+            instagram: document.getElementById('instagramTab'),
+            facebook: document.getElementById('facebookTab'),
+            youtube: document.getElementById('youtubeTab'),
             wifi: document.getElementById('wifiTab'),
         };
 
@@ -1884,6 +2009,9 @@
             const map = {
                 'url': tabContents.url,
                 'whatsapp': tabContents.whatsapp,
+                'instagram': tabContents.instagram,
+                'facebook': tabContents.facebook,
+                'youtube': tabContents.youtube,
                 'wifi': tabContents.wifi,
             };
             if (map[tabId]) map[tabId].classList.remove('hidden');
@@ -1894,13 +2022,14 @@
 
             if (tabId === 'wifi') {
                 toggleWifiInfo(true);
-                // Carregar redes e aplicar
                 loadSavedNetworks();
                 loadActiveNetwork();
                 renderNetworksList();
                 applyActiveNetwork();
             } else {
                 toggleWifiInfo(false);
+                // Se não for Wi-Fi, gerar QR automaticamente
+                setTimeout(generateFromCurrentTab, 100);
             }
         }
 
@@ -1930,21 +2059,55 @@
                 icon.className = 'fas fa-moon';
             }
             if (lastGeneratedText) {
-                generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent);
+                generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent, currentIcon);
             }
             localStorage.setItem('theme', currentTheme);
         };
 
+        // --- Criar overlay do ícone no QR Code ---
+        function createIconOverlay(iconClass, color) {
+            // Remove overlay existente
+            const existingOverlay = qrContainer.querySelector('.qr-icon-overlay');
+            if (existingOverlay) {
+                existingOverlay.remove();
+            }
+
+            // Se não houver ícone, retorna
+            if (!iconClass) return;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'qr-icon-overlay';
+            
+            const icon = document.createElement('i');
+            icon.className = `fab ${iconClass}`;
+            if (color) {
+                icon.style.color = color;
+            }
+            // Se for ícone do Font Awesome (fas)
+            if (iconClass === 'fa-link' || iconClass === 'fa-wifi') {
+                icon.className = `fas ${iconClass}`;
+                if (color) {
+                    icon.style.color = color;
+                }
+            }
+            
+            overlay.appendChild(icon);
+            qrContainer.appendChild(overlay);
+        }
+
         // --- Gerar QR Code ---
-        function generateQRCode(text, label, sub) {
+        function generateQRCode(text, label, sub, iconData) {
             qrContainer.innerHTML = '';
+            
             if (!text) {
                 qrContainer.innerHTML = '<div style="padding: 30px; color: var(--text-muted);">Insira dados válidos</div>';
                 qrLabel.textContent = 'Aguardando dados';
                 qrSub.textContent = 'Preencha os campos e gere o QR';
                 testContainer.innerHTML = '';
+                currentIcon = null;
                 return;
             }
+
             try {
                 const isDark = currentTheme === 'dark';
                 new QRCode(qrContainer, {
@@ -1955,6 +2118,15 @@
                     colorLight: isDark ? "#1a1d27" : "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
                 });
+
+                // Adicionar ícone central
+                if (iconData) {
+                    createIconOverlay(iconData.icon, iconData.color);
+                    currentIcon = iconData;
+                } else {
+                    currentIcon = null;
+                }
+
                 qrLabel.textContent = label || 'QR Code';
                 qrSub.textContent = sub || 'Pronto para uso';
                 lastGeneratedText = text;
@@ -1964,10 +2136,11 @@
                 qrLabel.textContent = 'Erro';
                 qrSub.textContent = 'Verifique os dados';
                 testContainer.innerHTML = '';
+                currentIcon = null;
             }
         }
 
-        // --- Baixar QR Code ---
+        // --- Baixar QR Code (com ícone incluído) ---
         window.downloadQRCode = function(format) {
             const qrElement = qrContainer.querySelector('canvas') || qrContainer.querySelector('img');
             if (!qrElement) {
@@ -1980,32 +2153,103 @@
                 let extension = format === 'jpg' ? 'jpg' : 'png';
                 let mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                 
-                if (qrElement.tagName === 'CANVAS') {
-                    link.download = `qrcode.${extension}`;
-                    link.href = qrElement.toDataURL(mimeType, 1.0);
-                    link.click();
-                } else if (qrElement.tagName === 'IMG') {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = qrElement.width || 180;
-                    canvas.height = qrElement.height || 180;
-                    const ctx = canvas.getContext('2d');
-                    
-                    if (format === 'jpg') {
-                        ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    }
-                    
-                    ctx.drawImage(qrElement, 0, 0, canvas.width, canvas.height);
-                    link.download = `qrcode.${extension}`;
-                    link.href = canvas.toDataURL(mimeType, 1.0);
-                    link.click();
-                } else {
-                    alert('Formato de QR Code não suportado para download.');
+                // Criar canvas com o ícone sobreposto
+                const canvas = document.createElement('canvas');
+                const size = 180;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Fundo para JPG
+                if (format === 'jpg') {
+                    ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
+                    ctx.fillRect(0, 0, size, size);
                 }
+                
+                // Desenhar o QR Code
+                if (qrElement.tagName === 'CANVAS') {
+                    ctx.drawImage(qrElement, 0, 0, size, size);
+                } else if (qrElement.tagName === 'IMG') {
+                    ctx.drawImage(qrElement, 0, 0, size, size);
+                }
+                
+                // Desenhar o ícone central se existir
+                const overlay = qrContainer.querySelector('.qr-icon-overlay');
+                if (overlay) {
+                    const iconElement = overlay.querySelector('i');
+                    if (iconElement) {
+                        // Criar um ícone renderizado no canvas
+                        const iconSize = 44;
+                        const iconX = (size - iconSize) / 2;
+                        const iconY = (size - iconSize) / 2;
+                        
+                        // Fundo do ícone (branco/escuro)
+                        const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' : 'rgba(255,255,255,0.92)';
+                        ctx.fillStyle = bgColor;
+                        ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        
+                        // Borda
+                        ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                        ctx.stroke();
+                        
+                        // Ícone
+                        const iconColor = iconElement.style.color || '#2563eb';
+                        const iconSizePx = 24;
+                        ctx.fillStyle = iconColor;
+                        ctx.font = `${iconSizePx}px "Font Awesome 6 Free", "Font Awesome 6 Brands"`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        
+                        // Extrair o nome do ícone
+                        let iconClass = iconElement.className;
+                        let iconName = '';
+                        if (iconClass.includes('fa-whatsapp')) iconName = '\uf232';
+                        else if (iconClass.includes('fa-instagram')) iconName = '\uf16d';
+                        else if (iconClass.includes('fa-facebook')) iconName = '\uf09a';
+                        else if (iconClass.includes('fa-youtube')) iconName = '\uf167';
+                        else if (iconClass.includes('fa-wifi')) iconName = '\uf1eb';
+                        else if (iconClass.includes('fa-link')) iconName = '\uf0c1';
+                        else iconName = '\uf0c1';
+                        
+                        ctx.fillText(iconName, size/2, size/2);
+                    }
+                }
+                
+                // Baixar
+                link.download = `qrcode.${extension}`;
+                link.href = canvas.toDataURL(mimeType, 1.0);
+                link.click();
+                
             } catch (error) {
                 alert('Erro ao baixar o QR Code: ' + error.message);
             }
         };
+
+        // --- roundRect polyfill para canvas ---
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (r > w/2) r = w/2;
+                if (r > h/2) r = h/2;
+                this.moveTo(x + r, y);
+                this.lineTo(x + w - r, y);
+                this.quadraticCurveTo(x + w, y, x + w, y + r);
+                this.lineTo(x + w, y + h - r);
+                this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                this.lineTo(x + r, y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - r);
+                this.lineTo(x, y + r);
+                this.quadraticCurveTo(x, y, x + r, y);
+                return this;
+            };
+        }
 
         // --- Obter dados da aba atual ---
         function getCurrentData() {
@@ -2013,7 +2257,12 @@
                 case 'url': {
                     const url = document.getElementById('urlInput').value.trim();
                     if (!url) return { error: 'URL inválida' };
-                    return { text: url, label: 'URL', sub: url };
+                    return { 
+                        text: url, 
+                        label: 'URL', 
+                        sub: url,
+                        icon: ICON_MAP.url
+                    };
                 }
                 case 'whatsapp': {
                     let phone = document.getElementById('whatsappInput').value.trim();
@@ -2021,7 +2270,52 @@
                     phone = phone.replace(/\s/g, '');
                     if (!phone.startsWith('55')) phone = '55' + phone;
                     const waLink = `https://wa.me/${phone}`;
-                    return { text: waLink, label: 'WhatsApp', sub: `+${phone}` };
+                    return { 
+                        text: waLink, 
+                        label: 'WhatsApp', 
+                        sub: `+${phone}`,
+                        icon: ICON_MAP.whatsapp
+                    };
+                }
+                case 'instagram': {
+                    const user = document.getElementById('instagramInput').value.trim();
+                    if (!user) return { error: 'Usuário inválido' };
+                    const url = `https://instagram.com/${user}`;
+                    return { 
+                        text: url, 
+                        label: `Instagram: @${user}`, 
+                        sub: url,
+                        icon: ICON_MAP.instagram
+                    };
+                }
+                case 'facebook': {
+                    const page = document.getElementById('facebookInput').value.trim();
+                    if (!page) return { error: 'Página inválida' };
+                    const url = `https://facebook.com/${page}`;
+                    return { 
+                        text: url, 
+                        label: `Facebook: ${page}`, 
+                        sub: url,
+                        icon: ICON_MAP.facebook
+                    };
+                }
+                case 'youtube': {
+                    const channel = document.getElementById('youtubeInput').value.trim();
+                    if (!channel) return { error: 'Canal inválido' };
+                    let url;
+                    if (channel.startsWith('@')) {
+                        url = `https://youtube.com/${channel}`;
+                    } else if (channel.startsWith('UC')) {
+                        url = `https://youtube.com/channel/${channel}`;
+                    } else {
+                        url = `https://youtube.com/@${channel}`;
+                    }
+                    return { 
+                        text: url, 
+                        label: `YouTube: ${channel}`, 
+                        sub: url,
+                        icon: ICON_MAP.youtube
+                    };
                 }
                 case 'wifi': {
                     const ssid = document.getElementById('wifiSSID').value.trim();
@@ -2033,7 +2327,12 @@
                         wifiString += `P:${password};`;
                     }
                     wifiString += ';';
-                    return { text: wifiString, label: `Wi-Fi: ${ssid}`, sub: `Seg: ${security}` };
+                    return { 
+                        text: wifiString, 
+                        label: `Wi-Fi: ${ssid}`, 
+                        sub: `Seg: ${security}`,
+                        icon: ICON_MAP.wifi
+                    };
                 }
                 default: return { error: 'Aba desconhecida' };
             }
@@ -2043,10 +2342,10 @@
         window.generateFromCurrentTab = function() {
             const data = getCurrentData();
             if (data.error) {
-                generateQRCode('', 'Erro', data.error);
+                generateQRCode('', 'Erro', data.error, null);
                 return;
             }
-            generateQRCode(data.text, data.label, data.sub);
+            generateQRCode(data.text, data.label, data.sub, data.icon);
         };
 
         // --- Testar ---
@@ -2062,10 +2361,10 @@
             }
 
             switch (currentTab) {
-                case 'url': {
-                    window.open(data.text, '_blank');
-                    break;
-                }
+                case 'url':
+                case 'instagram':
+                case 'facebook':
+                case 'youtube':
                 case 'whatsapp': {
                     window.open(data.text, '_blank');
                     break;
@@ -2080,7 +2379,6 @@
 
         // --- Inicialização ---
         window.addEventListener('DOMContentLoaded', function() {
-            // Inicializar redes
             loadSavedNetworks();
             loadActiveNetwork();
             
@@ -2114,26 +2412,12 @@
             }
         });
 
-        window.refreshWifiDevices = function() {
-            if (!isWifiTabActive) return;
-            
-            wifiDevicesContent.innerHTML = `
-                <div class="wifi-loading">
-                    <i class="fas fa-spinner"></i>
-                    <span>Verificando dispositivos...</span>
-                </div>
-            `;
-
-            setTimeout(() => {
-                simulateWifiDevices();
-            }, 800 + Math.random() * 600);
-        };
-
         // Expor funções para o escopo global
         window.loadSavedNetworks = loadSavedNetworks;
         window.saveNetworks = saveNetworks;
         window.renderNetworksList = renderNetworksList;
         window.applyActiveNetwork = applyActiveNetwork;
+        window.generateQRCode = generateQRCode;
 
     })();
 </script>
