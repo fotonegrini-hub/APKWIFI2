@@ -645,18 +645,6 @@
         .qr-icon-overlay .fa-phone {
             color: #34a853;
         }
-        .qr-icon-overlay .fa-map-marker-alt {
-            color: #fbbc05;
-        }
-        .qr-icon-overlay .fa-calendar-alt {
-            color: #4285f4;
-        }
-        .qr-icon-overlay .fa-id-card {
-            color: #7c3aed;
-        }
-        .qr-icon-overlay .fa-pix {
-            color: #00b94a;
-        }
 
         .qr-label {
             font-size: 15px;
@@ -835,199 +823,6 @@
             background: var(--wifi-info-bg);
         }
 
-        /* ===== WIFI INFO ===== */
-        .wifi-info-container {
-            margin-top: 16px;
-            padding: 14px 18px;
-            background: var(--wifi-info-bg);
-            border: 1px solid var(--wifi-info-border);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 300px;
-            transition: var(--transition);
-        }
-
-        .wifi-info-container.hidden {
-            display: none;
-        }
-
-        .wifi-info-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 14px;
-            flex-wrap: wrap;
-        }
-
-        .wifi-info-header i {
-            color: var(--icon-color);
-            font-size: 16px;
-        }
-
-        .wifi-refresh-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 20px;
-            transition: var(--transition);
-            font-size: 13px;
-        }
-
-        .wifi-refresh-btn:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
-        }
-
-        .wifi-refresh-btn.spinning i {
-            animation: spin 0.8s linear infinite;
-        }
-
-        .wifi-devices-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 6px;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .wifi-device-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            background: var(--bg-card);
-            padding: 6px 12px 6px 10px;
-            border-radius: 30px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border: 1px solid var(--input-border);
-            transition: var(--transition);
-        }
-
-        .wifi-device-item.blocked {
-            background: var(--blocked-bg);
-            border-color: var(--blocked-border);
-            opacity: 0.7;
-        }
-
-        .wifi-device-item.blocked .device-name {
-            color: var(--blocked-text);
-            text-decoration: line-through;
-        }
-
-        .wifi-device-item .device-info {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .wifi-device-item .device-info i {
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
-        .wifi-device-item .device-info .device-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 500;
-        }
-
-        .wifi-device-item .device-info .device-signal {
-            font-size: 10px;
-            color: var(--text-muted);
-            flex-shrink: 0;
-        }
-
-        .wifi-device-item .device-actions {
-            display: flex;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .wifi-device-item .device-actions .btn {
-            padding: 3px 10px;
-            font-size: 10px;
-            flex: 0 0 auto;
-            min-width: 24px;
-        }
-
-        .wifi-device-count {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .wifi-loading {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .wifi-loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        .saved-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            background: var(--saved-badge-bg);
-            color: var(--saved-badge-color);
-            padding: 2px 8px;
-            border-radius: 30px;
-            font-weight: 500;
-        }
-
-        .wifi-timestamp {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 6px;
-            text-align: center;
-        }
-
-        .wifi-permission-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            background: var(--badge-bg);
-            color: var(--badge-color);
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-weight: 500;
-        }
-
-        .blocked-badge-text {
-            font-size: 9px;
-            background: var(--blocked-bg);
-            color: var(--blocked-text);
-            padding: 1px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-            border: 1px solid var(--blocked-border);
-        }
-
-        .network-active-badge {
-            font-size: 9px;
-            background: var(--badge-bg);
-            color: var(--badge-color);
-            padding: 1px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
         /* ===== MODALS ===== */
         .modal-overlay {
             display: none;
@@ -1085,27 +880,6 @@
             font-size: 15px;
             line-height: 1.5;
             margin-bottom: 6px;
-        }
-
-        .modal-content .device-detail {
-            background: var(--wifi-info-bg);
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            margin: 12px 0 16px 0;
-            border: 1px solid var(--wifi-info-border);
-        }
-
-        .modal-content .device-detail .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .modal-content .device-detail .detail-row .label {
-            color: var(--text-muted);
-            font-weight: 400;
         }
 
         .modal-actions {
@@ -1291,11 +1065,6 @@
             .modal-content {
                 padding: 24px 20px;
             }
-            .wifi-device-item .device-actions .btn {
-                padding: 2px 8px;
-                font-size: 10px;
-                min-width: 24px;
-            }
             .qr-icon-overlay {
                 width: 36px;
                 height: 36px;
@@ -1307,9 +1076,6 @@
             #qrcode canvas {
                 width: 160px;
                 height: 160px;
-            }
-            .wifi-info-container {
-                max-width: 100%;
             }
         }
 
@@ -1354,13 +1120,6 @@
             }
             .modal-actions {
                 flex-direction: column;
-            }
-            .wifi-device-item {
-                flex-wrap: wrap;
-            }
-            .wifi-device-item .device-actions {
-                width: 100%;
-                justify-content: flex-end;
             }
             .toast-container {
                 left: 16px;
@@ -1721,60 +1480,6 @@
                         <i class="fas fa-download"></i> JPG
                     </button>
                 </div>
-
-                <!-- Wi-Fi Info -->
-                <div class="wifi-info-container hidden" id="wifiInfoContainer">
-                    <div class="wifi-info-header">
-                        <i class="fas fa-wifi"></i>
-                        <span>Dispositivos Conectados</span>
-                        <button class="wifi-refresh-btn" onclick="refreshWifiDevices()" title="Atualizar" id="wifiRefreshBtn">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                        <span class="saved-badge"><i class="fas fa-save"></i> salvo</span>
-                        <span class="wifi-permission-badge"><i class="fas fa-shield-alt"></i> Permissão ativa</span>
-                    </div>
-                    <div id="wifiDevicesContent">
-                        <div class="wifi-loading">
-                            <i class="fas fa-spinner"></i>
-                            <span>Verificando dispositivos...</span>
-                        </div>
-                    </div>
-                    <div class="wifi-timestamp" id="wifiTimestamp">Última atualização: --</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== MODAL PERMISSÃO ===== -->
-    <div class="modal-overlay" id="permissionModal">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-wifi"></i>
-            </div>
-            <h2>Nova Conexão Detectada</h2>
-            <p>Um novo dispositivo está tentando se conectar à rede Wi-Fi <strong id="modalSsid">Café Wi-Fi</strong>.</p>
-            <div class="device-detail">
-                <div class="detail-row">
-                    <span class="label">Dispositivo:</span>
-                    <span id="modalDeviceName">iPhone 15 Pro</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Endereço MAC:</span>
-                    <span id="modalDeviceMac">XX:XX:XX:XX:XX:XX</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Sinal:</span>
-                    <span id="modalDeviceSignal">85%</span>
-                </div>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted);">Permitir que este dispositivo se conecte à rede?</p>
-            <div class="modal-actions">
-                <button class="btn btn-reject" onclick="rejectConnection()">
-                    <i class="fas fa-times"></i> Negar
-                </button>
-                <button class="btn btn-approve" onclick="approveConnection()">
-                    <i class="fas fa-check"></i> Aceitar
-                </button>
             </div>
         </div>
     </div>
@@ -1830,11 +1535,6 @@
             const qrLabel = document.getElementById('qrLabel');
             const qrSub = document.getElementById('qrSub');
             const testContainer = document.getElementById('testButtonContainer');
-            const wifiInfoContainer = document.getElementById('wifiInfoContainer');
-            const wifiDevicesContent = document.getElementById('wifiDevicesContent');
-            const wifiTimestamp = document.getElementById('wifiTimestamp');
-            const permissionModal = document.getElementById('permissionModal');
-            const addNetworkModal = document.getElementById('addNetworkModal');
             const wifiNetworksList = document.getElementById('wifiNetworksList');
             const historyList = document.getElementById('historyList');
 
@@ -1842,18 +1542,12 @@
             let currentTheme = 'light';
             let lastGeneratedText = '';
             let lastGeneratedIcon = null;
-            let wifiDevices = [];
-            let isWifiTabActive = false;
-            let lastUpdateTime = null;
-            let pendingDevice = null;
             let savedNetworks = [];
             let activeNetworkId = null;
             let qrHistory = [];
 
-            const WIFI_STORAGE_KEY = 'wifi_devices_saved';
             const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
             const ACTIVE_NETWORK_KEY = 'wifi_active_network';
-            const PERMISSION_STORAGE_KEY = 'wifi_permission_enabled';
             const HISTORY_STORAGE_KEY = 'qr_history_saved';
             const THEME_STORAGE_KEY = 'theme';
 
@@ -1870,24 +1564,6 @@
                 phone: { icon: 'fa-phone', color: '#34a853' },
                 wifi: { icon: 'fa-wifi', color: '#3b82f6' }
             };
-
-            // =============================================
-            // DISPOSITIVOS SIMULADOS
-            // =============================================
-            const deviceNames = [
-                'iPhone 15 Pro', 'Galaxy S24', 'MacBook Air', 'iPad Pro',
-                'Notebook Dell', 'PC Desktop', 'Chromebook', 'Surface Pro',
-                'Smart TV LG', 'Amazon Echo', 'Google Nest', 'PlayStation 5',
-                'Xbox Series X', 'iPhone 14', 'Galaxy Tab', 'Lenovo ThinkPad',
-                'Samsung Smart TV', 'Apple Watch', 'Xiaomi Mi 13', 'OnePlus 12'
-            ];
-
-            const macAddresses = [
-                'AA:BB:CC:DD:EE:01', 'AA:BB:CC:DD:EE:02', 'AA:BB:CC:DD:EE:03',
-                'BB:CC:DD:EE:FF:01', 'BB:CC:DD:EE:FF:02', 'CC:DD:EE:FF:00:01',
-                'DD:EE:FF:00:11:01', 'EE:FF:00:11:22:01', 'FF:00:11:22:33:01',
-                '11:22:33:44:55:01', '22:33:44:55:66:01'
-            ];
 
             // =============================================
             // TOAST SYSTEM
@@ -2033,8 +1709,7 @@
                     exportedAt: new Date().toISOString(),
                     networks: savedNetworks,
                     activeNetwork: activeNetworkId,
-                    history: qrHistory,
-                    wifiDevices: wifiDevices
+                    history: qrHistory
                 };
 
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2070,10 +1745,6 @@
                                 qrHistory = data.history;
                                 saveHistory();
                                 renderHistory();
-                            }
-                            if (data.wifiDevices) {
-                                wifiDevices = data.wifiDevices;
-                                saveWifiDevices(wifiDevices);
                             }
                             renderNetworksList();
                             applyActiveNetwork();
@@ -2303,331 +1974,6 @@
             };
 
             // =============================================
-            // WI-FI DEVICES
-            // =============================================
-            function generateRandomMac() {
-                return macAddresses[Math.floor(Math.random() * macAddresses.length)];
-            }
-
-            function generateRandomDevices(count) {
-                const devices = [];
-                const usedNames = new Set();
-
-                for (let i = 0; i < count; i++) {
-                    let name;
-                    let attempts = 0;
-                    do {
-                        name = deviceNames[Math.floor(Math.random() * deviceNames.length)];
-                        attempts++;
-                    } while (usedNames.has(name) && attempts < 20);
-
-                    usedNames.add(name);
-                    const status = Math.random() > 0.25 ? 'connected' : 'idle';
-                    const signal = Math.floor(Math.random() * 40) + 60;
-                    const mac = generateRandomMac();
-                    const isBlocked = Math.random() > 0.88;
-
-                    devices.push({
-                        id: 'dev_' + Date.now() + '_' + i,
-                        name: name + (Math.random() > 0.7 ? ' 2' : ''),
-                        status: isBlocked ? 'blocked' : status,
-                        signal: signal,
-                        mac: mac,
-                        connectedAt: status === 'connected' ? new Date().toISOString() : null,
-                        blocked: isBlocked
-                    });
-                }
-                return devices;
-            }
-
-            function saveWifiDevices(devices) {
-                try {
-                    const data = {
-                        devices: devices,
-                        timestamp: new Date().toISOString(),
-                        networkId: activeNetworkId
-                    };
-                    localStorage.setItem(WIFI_STORAGE_KEY, JSON.stringify(data));
-                    lastUpdateTime = new Date();
-                    updateTimestamp();
-                } catch (e) { console.warn('Erro ao salvar Wi-Fi:', e); }
-            }
-
-            function loadWifiDevices() {
-                try {
-                    const saved = localStorage.getItem(WIFI_STORAGE_KEY);
-                    if (saved) {
-                        const data = JSON.parse(saved);
-                        if (data.devices && Array.isArray(data.devices) && data.devices.length > 0) {
-                            if (data.networkId === activeNetworkId) {
-                                wifiDevices = data.devices;
-                                if (data.timestamp) {
-                                    lastUpdateTime = new Date(data.timestamp);
-                                }
-                                return true;
-                            }
-                        }
-                    }
-                } catch (e) { console.warn('Erro ao carregar Wi-Fi salvo:', e); }
-                return false;
-            }
-
-            function updateTimestamp() {
-                if (lastUpdateTime) {
-                    const now = new Date();
-                    const diffMs = now - lastUpdateTime;
-                    const diffMin = Math.floor(diffMs / 60000);
-                    const diffSec = Math.floor((diffMs % 60000) / 1000);
-
-                    let timeStr;
-                    if (diffMin > 0) {
-                        timeStr = `${diffMin}m ${diffSec}s atrás`;
-                    } else {
-                        timeStr = `${diffSec}s atrás`;
-                    }
-
-                    wifiTimestamp.textContent = `Última atualização: ${timeStr}`;
-                } else {
-                    wifiTimestamp.textContent = 'Última atualização: --';
-                }
-            }
-
-            function updateWifiDisplay() {
-                if (wifiDevices.length === 0) {
-                    wifiDevicesContent.innerHTML = `
-                        <div style="color: var(--text-muted); font-size: 13px; padding: 4px 0;">
-                            <i class="fas fa-info-circle"></i> Nenhum dispositivo encontrado
-                        </div>
-                    `;
-                    return;
-                }
-
-                const connected = wifiDevices.filter(d => d.status === 'connected');
-                const blocked = wifiDevices.filter(d => d.blocked === true);
-                const total = wifiDevices.length;
-
-                let html = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
-                        <span class="wifi-device-count">${connected.length} conectado${connected.length !== 1 ? 's' : ''}</span>
-                        <span style="font-size: 12px; color: var(--text-muted);">
-                            ${total} total · ${blocked.length} bloqueado${blocked.length !== 1 ? 's' : ''}
-                        </span>
-                    </div>
-                    <div class="wifi-devices-grid">
-                `;
-
-                wifiDevices.forEach(device => {
-                    const isBlocked = device.blocked === true;
-                    const isConnected = device.status === 'connected';
-                    const isIdle = device.status === 'idle';
-
-                    let statusIcon;
-                    let statusColor;
-                    let itemClass = '';
-
-                    if (isBlocked) {
-                        statusIcon = 'fa-ban';
-                        statusColor = 'var(--btn-danger)';
-                        itemClass = 'blocked';
-                    } else if (isConnected) {
-                        statusIcon = 'fa-check-circle';
-                        statusColor = 'var(--btn-success)';
-                    } else {
-                        statusIcon = 'fa-clock';
-                        statusColor = 'var(--text-muted)';
-                    }
-
-                    html += `
-                        <div class="wifi-device-item ${itemClass}">
-                            <div class="device-info">
-                                <i class="fas ${statusIcon}" style="color: ${statusColor};"></i>
-                                <span class="device-name">${device.name}</span>
-                                <span class="device-signal">${device.signal}%</span>
-                                ${isBlocked ? `<span class="blocked-badge-text">BLOQUEADO</span>` : ''}
-                            </div>
-                            <div class="device-actions">
-                                ${!isBlocked ? `
-                                    ${isConnected ? `
-                                        <button class="btn btn-danger btn-small" onclick="disconnectDevice('${device.id}')" title="Desconectar">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    ` : `
-                                        <button class="btn btn-success btn-small" onclick="reconnectDevice('${device.id}')" title="Reconectar">
-                                            <i class="fas fa-plug"></i>
-                                        </button>
-                                    `}
-                                ` : ''}
-                                <button class="btn ${isBlocked ? 'btn-success' : 'btn-warning'} btn-small" onclick="toggleBlockDevice('${device.id}')" title="${isBlocked ? 'Desbloquear' : 'Bloquear'}">
-                                    <i class="fas ${isBlocked ? 'fa-unlock' : 'fa-lock'}"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                html += `</div>`;
-                wifiDevicesContent.innerHTML = html;
-                updateTimestamp();
-            }
-
-            function showPermissionModal(device, ssid) {
-                pendingDevice = device;
-                document.getElementById('modalSsid').textContent = ssid || 'Café Wi-Fi';
-                document.getElementById('modalDeviceName').textContent = device.name;
-                document.getElementById('modalDeviceMac').textContent = device.mac || 'XX:XX:XX:XX:XX:XX';
-                document.getElementById('modalDeviceSignal').textContent = device.signal + '%';
-                permissionModal.classList.add('active');
-            }
-
-            window.approveConnection = function() {
-                if (pendingDevice) {
-                    if (pendingDevice.blocked) {
-                        showToast(`⛔ ${pendingDevice.name} está bloqueado.`, 'error');
-                        pendingDevice = null;
-                        permissionModal.classList.remove('active');
-                        return;
-                    }
-
-                    pendingDevice.status = 'connected';
-                    pendingDevice.connectedAt = new Date().toISOString();
-                    wifiDevices.push(pendingDevice);
-                    saveWifiDevices(wifiDevices);
-                    updateWifiDisplay();
-
-                    showToast(`✅ ${pendingDevice.name} conectado à rede!`, 'success');
-                    pendingDevice = null;
-                }
-                permissionModal.classList.remove('active');
-            };
-
-            window.rejectConnection = function() {
-                if (pendingDevice) {
-                    showToast(`❌ Conexão de ${pendingDevice.name} negada.`, 'error');
-                    pendingDevice = null;
-                }
-                permissionModal.classList.remove('active');
-            };
-
-            window.toggleBlockDevice = function(deviceId) {
-                const device = wifiDevices.find(d => d.id === deviceId);
-                if (!device) return;
-
-                if (device.blocked) {
-                    if (confirm(`Deseja desbloquear "${device.name}"?`)) {
-                        device.blocked = false;
-                        device.status = 'idle';
-                        saveWifiDevices(wifiDevices);
-                        updateWifiDisplay();
-                        showToast(`🔓 ${device.name} foi desbloqueado.`, 'success');
-                    }
-                } else {
-                    if (confirm(`Deseja bloquear "${device.name}" permanentemente da rede?`)) {
-                        device.blocked = true;
-                        device.status = 'blocked';
-                        saveWifiDevices(wifiDevices);
-                        updateWifiDisplay();
-                        showToast(`🔒 ${device.name} foi bloqueado da rede.`, 'warning');
-                    }
-                }
-            };
-
-            window.disconnectDevice = function(deviceId) {
-                const device = wifiDevices.find(d => d.id === deviceId);
-                if (device && device.status === 'connected') {
-                    if (confirm(`Deseja realmente desconectar "${device.name}" da rede?`)) {
-                        device.status = 'idle';
-                        saveWifiDevices(wifiDevices);
-                        updateWifiDisplay();
-                        showToast(`🔌 ${device.name} foi desconectado.`, 'error');
-                    }
-                }
-            };
-
-            window.reconnectDevice = function(deviceId) {
-                const device = wifiDevices.find(d => d.id === deviceId);
-                if (device && device.status === 'idle') {
-                    if (device.blocked) {
-                        showToast(`⛔ ${device.name} está bloqueado. Desbloqueie primeiro.`, 'error');
-                        return;
-                    }
-                    const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
-                    showPermissionModal(device, ssid);
-                }
-            };
-
-            function simulateNewConnection() {
-                if (!isWifiTabActive) return;
-                if (Math.random() < 0.10 && wifiDevices.length < 15) {
-                    const newDevice = {
-                        id: 'dev_new_' + Date.now(),
-                        name: deviceNames[Math.floor(Math.random() * deviceNames.length)] + ' (novo)',
-                        status: 'pending',
-                        signal: Math.floor(Math.random() * 40) + 60,
-                        mac: generateRandomMac(),
-                        connectedAt: null,
-                        blocked: false
-                    };
-
-                    const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
-                    showPermissionModal(newDevice, ssid);
-                }
-            }
-
-            function simulateWifiDevices() {
-                const count = Math.floor(Math.random() * 8) + 2;
-                wifiDevices = generateRandomDevices(count);
-                saveWifiDevices(wifiDevices);
-                updateWifiDisplay();
-
-                const permissionEnabled = localStorage.getItem(PERMISSION_STORAGE_KEY) !== 'false';
-                if (permissionEnabled) {
-                    setTimeout(simulateNewConnection, 1000);
-                }
-            }
-
-            window.refreshWifiDevices = function() {
-                if (!isWifiTabActive) return;
-
-                const btn = document.getElementById('wifiRefreshBtn');
-                btn.classList.add('spinning');
-
-                wifiDevicesContent.innerHTML = `
-                    <div class="wifi-loading">
-                        <i class="fas fa-spinner"></i>
-                        <span>Verificando dispositivos...</span>
-                    </div>
-                `;
-
-                setTimeout(() => {
-                    simulateWifiDevices();
-                    btn.classList.remove('spinning');
-                }, 800 + Math.random() * 600);
-            };
-
-            function toggleWifiInfo(show) {
-                if (show) {
-                    wifiInfoContainer.classList.remove('hidden');
-                    isWifiTabActive = true;
-
-                    const hasSaved = loadWifiDevices();
-                    if (hasSaved && wifiDevices.length > 0) {
-                        updateWifiDisplay();
-                        setTimeout(() => {
-                            if (isWifiTabActive) {
-                                refreshWifiDevices();
-                            }
-                        }, 2000);
-                    } else {
-                        refreshWifiDevices();
-                    }
-                } else {
-                    wifiInfoContainer.classList.add('hidden');
-                    isWifiTabActive = false;
-                    permissionModal.classList.remove('active');
-                }
-            }
-
-            // =============================================
             // TABS
             // =============================================
             const tabButtons = document.querySelectorAll('.tab-btn');
@@ -2665,13 +2011,11 @@
                 currentTab = tabId;
 
                 if (tabId === 'wifi') {
-                    toggleWifiInfo(true);
                     loadSavedNetworks();
                     loadActiveNetwork();
                     renderNetworksList();
                     applyActiveNetwork();
                 } else {
-                    toggleWifiInfo(false);
                     setTimeout(generateFromCurrentTab, 100);
                 }
             }
@@ -2776,7 +2120,6 @@
                     testContainer.innerHTML =
                         `<div class="test-badge"><i class="fas fa-check-circle"></i> QR gerado com sucesso</div>`;
 
-                    // Adicionar ao histórico
                     addToHistory(currentTab, text, label || text.substring(0, 40));
 
                 } catch (e) {
@@ -2804,25 +2147,21 @@
                     let mimeType = format === 'jpg' ? 'image/jpeg' : (format === 'svg' ? 'image/svg+xml' : 'image/png');
 
                     if (format === 'svg') {
-                        // Para SVG, usamos a abordagem do canvas para manter o ícone
                         const canvas = document.createElement('canvas');
                         const size = 190;
                         canvas.width = size;
                         canvas.height = size;
                         const ctx = canvas.getContext('2d');
 
-                        // Fundo
                         ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
                         ctx.fillRect(0, 0, size, size);
 
-                        // QR Code
                         if (qrElement.tagName === 'CANVAS') {
                             ctx.drawImage(qrElement, 0, 0, size, size);
                         } else if (qrElement.tagName === 'IMG') {
                             ctx.drawImage(qrElement, 0, 0, size, size);
                         }
 
-                        // Ícone
                         const overlay = qrContainer.querySelector('.qr-icon-overlay');
                         if (overlay) {
                             const iconElement = overlay.querySelector('i');
@@ -2869,7 +2208,6 @@
                             }
                         }
 
-                        // Baixar como PNG (SVG não suporta ícones com fontes web facilmente)
                         link.download = `qrcode.png`;
                         link.href = canvas.toDataURL('image/png', 1.0);
                         link.click();
@@ -2877,7 +2215,6 @@
                         return;
                     }
 
-                    // PNG/JPG
                     const canvas = document.createElement('canvas');
                     const size = 190;
                     canvas.width = size;
@@ -3181,7 +2518,6 @@
             // INICIALIZAÇÃO
             // =============================================
             window.addEventListener('DOMContentLoaded', function() {
-                // Carregar tema
                 const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
                 if (savedTheme === 'dark') {
                     document.documentElement.setAttribute('data-theme', 'dark');
@@ -3190,38 +2526,16 @@
                     document.querySelector('#themeToggle i').className = 'fas fa-sun';
                 }
 
-                // Carregar histórico
                 loadHistory();
                 renderHistory();
 
-                // Carregar redes
                 loadSavedNetworks();
                 loadActiveNetwork();
 
-                // Iniciar com URL
                 switchTab('url');
                 setTimeout(() => {
                     generateFromCurrentTab();
                 }, 200);
-
-                // Intervalo para atualizar Wi-Fi
-                setInterval(() => {
-                    if (isWifiTabActive) {
-                        refreshWifiDevices();
-                    }
-                }, 30000);
-
-                // Atualizar timestamp
-                setInterval(() => {
-                    if (isWifiTabActive && lastUpdateTime) {
-                        updateTimestamp();
-                    }
-                }, 10000);
-
-                // Permissão padrão
-                if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
-                    localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
-                }
             });
 
             // =============================================
