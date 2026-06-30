@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator · Desktop Moderno</title>
+    <title>QR Code Generator Pro · Desktop Moderno</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js">
+    </script>
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -56,6 +58,9 @@
             --network-card-bg: rgba(255, 255, 255, 0.4);
             --qr-overlay-bg: rgba(255, 255, 255, 0.92);
             --qr-overlay-border: rgba(0, 0, 0, 0.08);
+            --toast-bg: #1a1e2b;
+            --toast-text: white;
+            --radius: 16px;
         }
 
         [data-theme="dark"] {
@@ -99,6 +104,8 @@
             --network-card-bg: rgba(42, 47, 66, 0.5);
             --qr-overlay-bg: rgba(26, 29, 39, 0.92);
             --qr-overlay-border: rgba(255, 255, 255, 0.1);
+            --toast-bg: #2a2f42;
+            --toast-text: #e8edf5;
         }
 
         body {
@@ -111,8 +118,9 @@
             transition: var(--transition);
         }
 
+        /* ===== APP CONTAINER ===== */
         .app-container {
-            max-width: 1100px;
+            max-width: 1150px;
             width: 100%;
             background: var(--bg-card);
             backdrop-filter: blur(16px);
@@ -124,6 +132,7 @@
             transition: var(--transition);
         }
 
+        /* ===== HEADER ===== */
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -152,6 +161,13 @@
             transition: var(--transition);
         }
 
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .theme-toggle {
             background: var(--tab-bg);
             border: 1px solid var(--input-border);
@@ -177,15 +193,41 @@
             transition: var(--transition);
         }
 
+        .btn-header {
+            background: var(--tab-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-header:hover {
+            background: var(--bg-card-hover);
+            transform: scale(0.98);
+        }
+
+        .btn-header i {
+            font-size: 14px;
+        }
+
+        /* ===== GRID ===== */
         .grid-2col {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 32px;
         }
 
+        /* ===== TABS ===== */
         .tabs {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
             margin-bottom: 24px;
             background: var(--tab-bg);
@@ -199,22 +241,23 @@
             flex: 1 0 auto;
             background: transparent;
             border: none;
-            padding: 12px 18px;
+            padding: 10px 14px;
             border-radius: 40px;
             font-weight: 550;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
             transition: var(--transition);
             letter-spacing: -0.2px;
+            position: relative;
         }
 
         .tab-btn i {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-muted);
             transition: var(--transition);
         }
@@ -235,6 +278,18 @@
             color: var(--icon-color);
         }
 
+        .tab-btn .badge-tab {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--btn-danger);
+            color: white;
+            font-size: 9px;
+            padding: 1px 6px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
         .tab-content {
             display: block;
             animation: fadeSlide 0.2s ease;
@@ -245,17 +300,24 @@
         }
 
         @keyframes fadeSlide {
-            0% { opacity: 0.5; transform: translateY(6px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0.5;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        /* ===== INPUTS ===== */
         .input-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .input-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
             margin-bottom: 6px;
@@ -263,7 +325,12 @@
             transition: var(--transition);
         }
 
-        .input-group .field-with-icon {
+        .input-group label .required {
+            color: var(--btn-danger);
+            margin-left: 2px;
+        }
+
+        .field-with-icon {
             position: relative;
             display: flex;
             align-items: center;
@@ -273,30 +340,48 @@
             position: absolute;
             left: 16px;
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 15px;
             transition: var(--transition);
+            z-index: 1;
         }
 
-        .field-with-icon input, 
-        .field-with-icon select {
+        .field-with-icon input,
+        .field-with-icon select,
+        .field-with-icon textarea {
             width: 100%;
-            padding: 14px 14px 14px 48px;
-            border: 1px solid var(--input-border);
-            border-radius: 24px;
+            padding: 12px 14px 12px 44px;
+            border: 2px solid var(--input-border);
+            border-radius: var(--radius);
             background: var(--input-bg);
             backdrop-filter: blur(4px);
-            font-size: 15px;
+            font-size: 14px;
             transition: var(--transition);
             color: var(--text-primary);
             outline: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+            min-height: 48px;
+        }
+
+        .field-with-icon textarea {
+            resize: vertical;
+            min-height: 60px;
+            padding-top: 12px;
         }
 
         .field-with-icon input:focus,
-        .field-with-icon select:focus {
+        .field-with-icon select:focus,
+        .field-with-icon textarea:focus {
             border-color: var(--btn-primary);
             background: var(--bg-card-hover);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+        }
+
+        .field-with-icon input.valid {
+            border-color: var(--btn-success);
+        }
+
+        .field-with-icon input.invalid {
+            border-color: var(--btn-danger);
         }
 
         .field-with-icon input::placeholder {
@@ -304,22 +389,36 @@
             font-weight: 400;
         }
 
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-hint i {
+            font-size: 12px;
+        }
+
+        /* ===== BUTTONS ===== */
         .btn-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 22px;
+            gap: 10px;
+            margin-top: 18px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 14px 28px;
+            gap: 8px;
+            padding: 12px 24px;
             border-radius: 40px;
             font-weight: 550;
-            font-size: 15px;
+            font-size: 14px;
             border: none;
             background: var(--tab-active);
             color: var(--text-primary);
@@ -328,6 +427,12 @@
             box-shadow: 0 4px 8px var(--shadow-color);
             border: 1px solid var(--input-border);
             flex: 1 1 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
         }
 
         .btn-primary {
@@ -339,7 +444,6 @@
 
         .btn-primary:hover {
             background: var(--btn-primary-hover);
-            transform: scale(0.98);
             box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
         }
 
@@ -362,7 +466,6 @@
 
         .btn-success:hover {
             background: var(--btn-success-hover);
-            transform: scale(0.98);
         }
 
         .btn-download {
@@ -374,7 +477,6 @@
 
         .btn-download:hover {
             background: var(--btn-download-hover);
-            transform: scale(0.98);
             box-shadow: 0 6px 14px rgba(124, 58, 237, 0.3);
         }
 
@@ -383,14 +485,10 @@
             color: white;
             border: none;
             box-shadow: 0 8px 18px rgba(220, 38, 38, 0.2);
-            padding: 4px 12px;
-            font-size: 12px;
-            flex: 0 0 auto;
         }
 
         .btn-danger:hover {
             background: var(--btn-danger-hover);
-            transform: scale(0.95);
         }
 
         .btn-warning {
@@ -398,20 +496,18 @@
             color: white;
             border: none;
             box-shadow: 0 8px 18px rgba(217, 119, 6, 0.2);
-            padding: 4px 12px;
-            font-size: 12px;
-            flex: 0 0 auto;
         }
 
         .btn-warning:hover {
             background: var(--btn-warning-hover);
-            transform: scale(0.95);
         }
 
         .btn-small {
             padding: 4px 12px;
-            font-size: 12px;
+            font-size: 11px;
             flex: 0 0 auto;
+            min-width: 28px;
+            border-radius: 30px;
         }
 
         .btn-sm {
@@ -420,6 +516,38 @@
             flex: 0 0 auto;
         }
 
+        .btn-icon {
+            padding: 10px;
+            min-width: 44px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+        }
+
+        .btn .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== QR PANEL ===== */
         .qr-panel {
             display: flex;
             flex-direction: column;
@@ -430,7 +558,7 @@
             border-radius: 36px;
             padding: 32px 16px;
             border: 1px solid var(--border-color);
-            min-height: 300px;
+            min-height: 320px;
             transition: var(--transition);
             position: relative;
         }
@@ -441,19 +569,34 @@
             border-radius: 28px;
             box-shadow: 0 16px 30px var(--shadow-color);
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             transition: var(--transition);
             position: relative;
+            animation: qrPulse 0.6s ease;
         }
 
-        #qrcode img, #qrcode canvas {
+        @keyframes qrPulse {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #qrcode img,
+        #qrcode canvas {
             display: block;
-            width: 180px;
-            height: 180px;
+            width: 190px;
+            height: 190px;
             border-radius: 16px;
         }
 
-        /* Overlay do ícone no centro do QR Code */
         .qr-icon-overlay {
             position: absolute;
             top: 50%;
@@ -467,7 +610,7 @@
             align-items: center;
             justify-content: center;
             border: 2px solid var(--qr-overlay-border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             pointer-events: none;
             z-index: 10;
             backdrop-filter: blur(4px);
@@ -476,31 +619,43 @@
 
         .qr-icon-overlay i {
             font-size: 24px;
-            color: var(--icon-color);
         }
 
         .qr-icon-overlay .fa-whatsapp {
             color: #25D366;
         }
-
         .qr-icon-overlay .fa-instagram {
             color: #E4405F;
         }
-
         .qr-icon-overlay .fa-facebook {
             color: #1877F2;
         }
-
         .qr-icon-overlay .fa-youtube {
             color: #FF0000;
         }
-
         .qr-icon-overlay .fa-wifi {
             color: #3b82f6;
         }
-
         .qr-icon-overlay .fa-link {
             color: var(--icon-color);
+        }
+        .qr-icon-overlay .fa-envelope {
+            color: #ea4335;
+        }
+        .qr-icon-overlay .fa-phone {
+            color: #34a853;
+        }
+        .qr-icon-overlay .fa-map-marker-alt {
+            color: #fbbc05;
+        }
+        .qr-icon-overlay .fa-calendar-alt {
+            color: #4285f4;
+        }
+        .qr-icon-overlay .fa-id-card {
+            color: #7c3aed;
+        }
+        .qr-icon-overlay .fa-pix {
+            color: #00b94a;
         }
 
         .qr-label {
@@ -510,15 +665,29 @@
             margin-top: 4px;
             text-align: center;
             word-break: break-all;
-            max-width: 260px;
+            max-width: 280px;
             transition: var(--transition);
         }
 
         .qr-sub {
             font-size: 13px;
             color: var(--text-muted);
-            margin-top: 6px;
+            margin-top: 4px;
             transition: var(--transition);
+        }
+
+        .qr-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .qr-actions .btn {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            font-size: 12px;
         }
 
         .test-badge {
@@ -531,7 +700,7 @@
             color: var(--badge-color);
             font-weight: 500;
             font-size: 14px;
-            margin-top: 12px;
+            margin-top: 10px;
             transition: var(--transition);
         }
 
@@ -546,8 +715,13 @@
             align-items: center;
         }
 
-        .mt-2 { margin-top: 8px; }
-        .text-muted { color: var(--text-muted); font-size: 14px; }
+        .mt-2 {
+            margin-top: 8px;
+        }
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
         .download-container {
             display: flex;
@@ -558,7 +732,11 @@
             flex-wrap: wrap;
         }
 
-        /* --- Wi-Fi Networks --- */
+        .download-container .btn {
+            flex: 0 0 auto;
+        }
+
+        /* ===== WI-FI NETWORKS ===== */
         .wifi-networks-section {
             margin-bottom: 16px;
         }
@@ -566,7 +744,7 @@
         .wifi-networks-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             max-height: 150px;
             overflow-y: auto;
             padding-right: 4px;
@@ -578,7 +756,7 @@
             justify-content: space-between;
             background: var(--network-card-bg);
             padding: 8px 14px;
-            border-radius: 16px;
+            border-radius: var(--radius);
             border: 1px solid var(--input-border);
             transition: var(--transition);
             cursor: pointer;
@@ -603,7 +781,7 @@
 
         .wifi-network-item .network-info i {
             color: var(--icon-color);
-            font-size: 16px;
+            font-size: 15px;
             flex-shrink: 0;
         }
 
@@ -639,7 +817,7 @@
             margin-top: 8px;
             padding: 8px;
             border: 2px dashed var(--input-border);
-            border-radius: 16px;
+            border-radius: var(--radius);
             background: transparent;
             color: var(--text-muted);
             cursor: pointer;
@@ -657,7 +835,7 @@
             background: var(--wifi-info-bg);
         }
 
-        /* --- Wi-Fi Info Container --- */
+        /* ===== WIFI INFO ===== */
         .wifi-info-container {
             margin-top: 16px;
             padding: 14px 18px;
@@ -665,7 +843,7 @@
             border: 1px solid var(--wifi-info-border);
             border-radius: 20px;
             width: 100%;
-            max-width: 280px;
+            max-width: 300px;
             transition: var(--transition);
         }
 
@@ -687,6 +865,26 @@
         .wifi-info-header i {
             color: var(--icon-color);
             font-size: 16px;
+        }
+
+        .wifi-refresh-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+            transition: var(--transition);
+            font-size: 13px;
+        }
+
+        .wifi-refresh-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .wifi-refresh-btn.spinning i {
+            animation: spin 0.8s linear infinite;
         }
 
         .wifi-devices-grid {
@@ -757,31 +955,15 @@
 
         .wifi-device-item .device-actions .btn {
             padding: 3px 10px;
-            font-size: 11px;
+            font-size: 10px;
             flex: 0 0 auto;
-            min-width: 28px;
+            min-width: 24px;
         }
 
         .wifi-device-count {
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 15px;
-        }
-
-        .wifi-refresh-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 20px;
-            transition: var(--transition);
-            font-size: 13px;
-        }
-
-        .wifi-refresh-btn:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
+            font-size: 14px;
         }
 
         .wifi-loading {
@@ -796,11 +978,6 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .saved-badge {
             display: inline-flex;
             align-items: center;
@@ -810,7 +987,6 @@
             color: var(--saved-badge-color);
             padding: 2px 8px;
             border-radius: 30px;
-            margin-left: 4px;
             font-weight: 500;
         }
 
@@ -852,7 +1028,7 @@
             font-weight: 600;
         }
 
-        /* --- Modal de Adicionar Rede --- */
+        /* ===== MODALS ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -874,19 +1050,27 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .modal-content {
             background: var(--modal-bg);
             border-radius: 32px;
             padding: 32px 36px;
-            max-width: 420px;
+            max-width: 440px;
             width: 90%;
             box-shadow: 0 30px 60px var(--shadow-color);
             border: 1px solid var(--border-color);
             transition: var(--transition);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-content h2 {
@@ -906,7 +1090,7 @@
         .modal-content .device-detail {
             background: var(--wifi-info-bg);
             padding: 12px 16px;
-            border-radius: 16px;
+            border-radius: var(--radius);
             margin: 12px 0 16px 0;
             border: 1px solid var(--wifi-info-border);
         }
@@ -944,7 +1128,6 @@
 
         .btn-approve:hover {
             background: var(--btn-success-hover);
-            transform: scale(0.98);
         }
 
         .btn-reject {
@@ -955,7 +1138,6 @@
 
         .btn-reject:hover {
             background: var(--btn-danger-hover);
-            transform: scale(0.98);
         }
 
         .modal-icon {
@@ -981,7 +1163,7 @@
             width: 100%;
             padding: 10px 14px;
             border: 1px solid var(--input-border);
-            border-radius: 16px;
+            border-radius: var(--radius);
             background: var(--input-bg);
             font-size: 14px;
             color: var(--text-primary);
@@ -995,7 +1177,89 @@
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
         }
 
-        @media (max-width: 800px) {
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            background: var(--toast-bg);
+            color: var(--toast-text);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.4s ease;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 4px solid var(--btn-primary);
+            transform-origin: bottom right;
+        }
+
+        .toast.success {
+            border-left-color: var(--btn-success);
+        }
+        .toast.error {
+            border-left-color: var(--btn-danger);
+        }
+        .toast.warning {
+            border-left-color: var(--btn-warning);
+        }
+        .toast.info {
+            border-left-color: var(--btn-primary);
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+        }
+        .toast .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+            transition: var(--transition);
+        }
+        .toast .toast-close:hover {
+            color: var(--text-primary);
+        }
+        .toast .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--btn-primary);
+            border-radius: 0 0 0 4px;
+            transition: width 0.1s linear;
+        }
+        .toast {
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
             .app-container {
                 padding: 24px 16px;
                 border-radius: 32px;
@@ -1005,17 +1269,24 @@
                 gap: 30px;
             }
             .tab-btn {
-                font-size: 13px;
-                padding: 10px 12px;
+                font-size: 12px;
+                padding: 8px 10px;
                 flex: 1;
             }
+            .tab-btn i {
+                font-size: 13px;
+            }
             .btn {
-                padding: 12px 18px;
-                font-size: 14px;
+                padding: 10px 16px;
+                font-size: 13px;
             }
             .header-container {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: flex-start;
             }
             .modal-content {
                 padding: 24px 20px;
@@ -1025,14 +1296,6 @@
                 font-size: 10px;
                 min-width: 24px;
             }
-            .wifi-network-item {
-                flex-wrap: wrap;
-            }
-            .wifi-network-item .network-actions {
-                width: 100%;
-                justify-content: flex-end;
-                margin-top: 4px;
-            }
             .qr-icon-overlay {
                 width: 36px;
                 height: 36px;
@@ -1040,23 +1303,44 @@
             .qr-icon-overlay i {
                 font-size: 18px;
             }
+            #qrcode img,
+            #qrcode canvas {
+                width: 160px;
+                height: 160px;
+            }
+            .wifi-info-container {
+                max-width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
+            .app-container {
+                padding: 16px 12px;
+                border-radius: 24px;
+            }
             .tab-btn {
-                font-size: 12px;
-                padding: 8px 8px;
-                gap: 6px;
+                font-size: 10px;
+                padding: 6px 6px;
+                gap: 4px;
             }
             .tab-btn i {
-                font-size: 14px;
+                font-size: 11px;
             }
-            .wifi-device-item {
-                flex-wrap: wrap;
+            h1 {
+                font-size: 20px;
             }
-            .wifi-device-item .device-actions {
-                width: 100%;
-                justify-content: flex-end;
+            h1 i {
+                font-size: 22px;
+                padding: 8px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            #qrcode img,
+            #qrcode canvas {
+                width: 140px;
+                height: 140px;
             }
             .qr-icon-overlay {
                 width: 30px;
@@ -1065,1362 +1349,1892 @@
             .qr-icon-overlay i {
                 font-size: 15px;
             }
+            .modal-content {
+                padding: 20px 16px;
+            }
+            .modal-actions {
+                flex-direction: column;
+            }
+            .wifi-device-item {
+                flex-wrap: wrap;
+            }
+            .wifi-device-item .device-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .toast-container {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-width: 100%;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--tab-bg);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* ===== HISTORY ===== */
+        .history-list {
+            max-height: 120px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--input-border);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .history-item .h-type {
+            font-weight: 600;
+            color: var(--icon-color);
+            font-size: 10px;
+            text-transform: uppercase;
+            min-width: 40px;
+        }
+
+        .history-item .h-content {
+            flex: 1;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 8px;
+        }
+
+        .history-item .h-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .history-item .h-actions .btn {
+            padding: 2px 6px;
+            font-size: 10px;
+            min-width: 20px;
+        }
+
+        .history-empty {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 12px;
         }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="header-container">
-        <h1>
-            <i class="fas fa-qrcode"></i> 
-            Gerador QR Code · Desktop
-        </h1>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-            <i class="fas fa-moon"></i>
-            <span id="themeLabel">Claro</span>
-        </button>
-    </div>
 
-    <div class="grid-2col">
-        <div>
-            <div class="tabs" id="tabHeaders">
-                <button class="tab-btn active" data-tab="urlTab"><i class="fas fa-link"></i> URL</button>
-                <button class="tab-btn" data-tab="whatsappTab"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button class="tab-btn" data-tab="instagramTab"><i class="fab fa-instagram"></i> Instagram</button>
-                <button class="tab-btn" data-tab="facebookTab"><i class="fab fa-facebook"></i> Facebook</button>
-                <button class="tab-btn" data-tab="youtubeTab"><i class="fab fa-youtube"></i> YouTube</button>
-                <button class="tab-btn" data-tab="wifiTab"><i class="fas fa-wifi"></i> Wi-Fi</button>
-            </div>
-
-            <div id="urlTab" class="tab-content">
-                <div class="input-group">
-                    <label><i class="fas fa-globe" style="margin-right: 6px;"></i> Endereço URL</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-link"></i>
-                        <input type="url" id="urlInput" placeholder="https://exemplo.com" value="https://www.example.com">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div id="whatsappTab" class="tab-content hidden">
-                <div class="input-group">
-                    <label><i class="fab fa-whatsapp"></i> Telefone (55 + DDD + Número)</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-phone"></i>
-                        <input type="tel" id="whatsappInput" placeholder="5511999999999" value="5511999999999">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div id="instagramTab" class="tab-content hidden">
-                <div class="input-group">
-                    <label><i class="fab fa-instagram"></i> Perfil do Instagram</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-at"></i>
-                        <input type="text" id="instagramInput" placeholder="usuario" value="exemplo_perfil">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div id="facebookTab" class="tab-content hidden">
-                <div class="input-group">
-                    <label><i class="fab fa-facebook"></i> Perfil/Página do Facebook</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="facebookInput" placeholder="usuario ou pagina" value="exemplo.pagina">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div id="youtubeTab" class="tab-content hidden">
-                <div class="input-group">
-                    <label><i class="fab fa-youtube"></i> Canal do YouTube</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-play"></i>
-                        <input type="text" id="youtubeInput" placeholder="ID do canal ou @usuario" value="UCExemplo123">
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div id="wifiTab" class="tab-content hidden">
-                <div class="wifi-networks-section">
-                    <label style="font-size: 14px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
-                        <i class="fas fa-network-wired"></i> Redes Salvas
-                    </label>
-                    <div class="wifi-networks-list" id="wifiNetworksList">
-                        <!-- Redes serão inseridas aqui via JavaScript -->
-                    </div>
-                    <button class="add-network-btn" onclick="showAddNetworkModal()">
-                        <i class="fas fa-plus-circle"></i> Adicionar Nova Rede
-                    </button>
-                </div>
-
-                <div class="input-group">
-                    <label>Nome da Rede (SSID)</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-network-wired"></i>
-                        <input type="text" id="wifiSSID" placeholder="Minha Rede" value="Café Wi-Fi">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Senha</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-key"></i>
-                        <input type="text" id="wifiPassword" placeholder="senha123" value="12345678">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Tipo de Segurança</label>
-                    <div class="field-with-icon">
-                        <i class="fas fa-shield-alt"></i>
-                        <select id="wifiSecurity">
-                            <option value="WPA" selected>WPA/WPA2</option>
-                            <option value="WEP">WEP</option>
-                            <option value="nopass">Sem senha (nopass)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                    <button class="btn btn-success" onclick="saveCurrentNetwork()"><i class="fas fa-save"></i> Salvar Rede</button>
-                    <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 18px; transition: var(--transition);">
-                <i class="fas fa-lightbulb" style="margin-right: 8px;"></i> Clique em <strong>Gerar QR</strong> para atualizar o código. Use <strong>Testar</strong> para abrir/visualizar.
+    <!-- ===== APP ===== -->
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header-container">
+            <h1>
+                <i class="fas fa-qrcode"></i>
+                QR Code Pro
+            </h1>
+            <div class="header-actions">
+                <button class="btn-header" onclick="clearHistory()" title="Limpar histórico">
+                    <i class="fas fa-history"></i> Histórico
+                </button>
+                <button class="btn-header" onclick="exportData()" title="Exportar dados">
+                    <i class="fas fa-download"></i> Backup
+                </button>
+                <button class="btn-header" onclick="importData()" title="Importar dados">
+                    <i class="fas fa-upload"></i> Restaurar
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span id="themeLabel">Claro</span>
+                </button>
             </div>
         </div>
 
-        <div class="qr-panel">
-            <div id="qrcode" style="position: relative;">
-                <!-- O overlay do ícone será inserido aqui via JavaScript -->
-            </div>
-            <div class="qr-label" id="qrLabel">QR Code gerado</div>
-            <div class="qr-sub" id="qrSub">Aguardando ação</div>
-            <div id="testButtonContainer"></div>
-            <div class="download-container" id="downloadContainer">
-                <button class="btn btn-download" onclick="downloadQRCode('png')">
-                    <i class="fas fa-download"></i> Baixar PNG
-                </button>
-                <button class="btn btn-download" onclick="downloadQRCode('jpg')">
-                    <i class="fas fa-download"></i> Baixar JPG
-                </button>
-            </div>
-            <!-- Wi-Fi Info -->
-            <div class="wifi-info-container hidden" id="wifiInfoContainer">
-                <div class="wifi-info-header">
-                    <i class="fas fa-wifi"></i>
-                    <span>Dispositivos Conectados</span>
-                    <button class="wifi-refresh-btn" onclick="refreshWifiDevices()" title="Atualizar">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <span class="saved-badge"><i class="fas fa-save"></i> salvo</span>
-                    <span class="wifi-permission-badge"><i class="fas fa-shield-alt"></i> Permissão ativa</span>
+        <!-- Grid -->
+        <div class="grid-2col">
+            <!-- Left: Forms -->
+            <div>
+                <!-- Tabs -->
+                <div class="tabs" id="tabHeaders">
+                    <button class="tab-btn active" data-tab="urlTab"><i class="fas fa-link"></i> URL</button>
+                    <button class="tab-btn" data-tab="whatsappTab"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="tab-btn" data-tab="instagramTab"><i class="fab fa-instagram"></i> Instagram</button>
+                    <button class="tab-btn" data-tab="facebookTab"><i class="fab fa-facebook"></i> Facebook</button>
+                    <button class="tab-btn" data-tab="youtubeTab"><i class="fab fa-youtube"></i> YouTube</button>
+                    <button class="tab-btn" data-tab="emailTab"><i class="fas fa-envelope"></i> E-mail</button>
+                    <button class="tab-btn" data-tab="phoneTab"><i class="fas fa-phone"></i> Telefone</button>
+                    <button class="tab-btn" data-tab="wifiTab"><i class="fas fa-wifi"></i> Wi-Fi <span class="badge-tab">●</span></button>
                 </div>
-                <div id="wifiDevicesContent">
+
+                <!-- URL -->
+                <div id="urlTab" class="tab-content">
+                    <div class="input-group">
+                        <label><i class="fas fa-globe" style="margin-right: 6px;"></i> Endereço URL <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-link"></i>
+                            <input type="url" id="urlInput" placeholder="https://exemplo.com" value="https://www.example.com">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> Insira uma URL válida com http:// ou https://</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div id="whatsappTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fab fa-whatsapp"></i> Telefone (55 + DDD + Número) <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="whatsappInput" placeholder="5511999999999" value="5511999999999">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> Formato: 55 + DDD + número (ex: 5511999999999)</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div id="instagramTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fab fa-instagram"></i> Perfil do Instagram <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="instagramInput" placeholder="usuario" value="exemplo_perfil">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> Nome de usuário sem o @</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Facebook -->
+                <div id="facebookTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fab fa-facebook"></i> Perfil/Página do Facebook <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="facebookInput" placeholder="usuario ou pagina" value="exemplo.pagina">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> Nome de usuário ou ID da página</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- YouTube -->
+                <div id="youtubeTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fab fa-youtube"></i> Canal do YouTube <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-play"></i>
+                            <input type="text" id="youtubeInput" placeholder="ID do canal ou @usuario" value="UCExemplo123">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> ID do canal (UC...) ou @nome</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- E-mail -->
+                <div id="emailTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fas fa-envelope"></i> Endereço de E-mail <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="emailInput" placeholder="contato@exemplo.com" value="contato@exemplo.com">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Assunto (opcional)</label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-tag"></i>
+                            <input type="text" id="emailSubject" placeholder="Assunto do e-mail" value="Olá!">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Corpo (opcional)</label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-align-left"></i>
+                            <textarea id="emailBody" placeholder="Mensagem do e-mail" rows="2">Gostaria de entrar em contato.</textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Telefone -->
+                <div id="phoneTab" class="tab-content hidden">
+                    <div class="input-group">
+                        <label><i class="fas fa-phone"></i> Número de Telefone <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phoneInput" placeholder="5511999999999" value="5511999999999">
+                        </div>
+                        <div class="input-hint"><i class="fas fa-info-circle"></i> Formato: 55 + DDD + número (ex: 5511999999999)</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Wi-Fi -->
+                <div id="wifiTab" class="tab-content hidden">
+                    <div class="wifi-networks-section">
+                        <label style="font-size: 14px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
+                            <i class="fas fa-network-wired"></i> Redes Salvas
+                        </label>
+                        <div class="wifi-networks-list" id="wifiNetworksList">
+                            <!-- Redes serão inseridas aqui via JavaScript -->
+                        </div>
+                        <button class="add-network-btn" onclick="showAddNetworkModal()">
+                            <i class="fas fa-plus-circle"></i> Adicionar Nova Rede
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nome da Rede (SSID) <span class="required">*</span></label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-network-wired"></i>
+                            <input type="text" id="wifiSSID" placeholder="Minha Rede" value="Café Wi-Fi">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <div class="field-with-icon" style="position:relative;">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="wifiPassword" placeholder="senha123" value="12345678">
+                            <button onclick="togglePasswordVisibility()" style="position:absolute;right:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;z-index:2;">
+                                <i class="fas fa-eye" id="wifiPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo de Segurança</label>
+                        <div class="field-with-icon">
+                            <i class="fas fa-shield-alt"></i>
+                            <select id="wifiSecurity">
+                                <option value="WPA" selected>WPA/WPA2</option>
+                                <option value="WEP">WEP</option>
+                                <option value="nopass">Sem senha (nopass)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
+                        <button class="btn btn-success" onclick="saveCurrentNetwork()"><i class="fas fa-save"></i> Salvar Rede</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Footer info -->
+                <div style="margin-top: 20px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 18px; transition: var(--transition);">
+                    <i class="fas fa-lightbulb" style="margin-right: 8px;"></i> Clique em <strong>Gerar QR</strong> para atualizar o código. Use <strong>Testar</strong> para abrir/visualizar.
+                </div>
+
+                <!-- Histórico -->
+                <div style="margin-top: 16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);"><i class="fas fa-history"></i> Histórico</span>
+                        <button onclick="clearHistory()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">
+                            <i class="fas fa-trash-alt"></i> Limpar
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">Nenhum QR Code gerado ainda</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: QR Panel -->
+            <div class="qr-panel">
+                <div id="qrcode" style="position: relative;">
+                    <!-- O overlay do ícone será inserido aqui via JavaScript -->
+                </div>
+                <div class="qr-label" id="qrLabel">QR Code gerado</div>
+                <div class="qr-sub" id="qrSub">Aguardando ação</div>
+
+                <div class="qr-actions">
+                    <button class="btn btn-outline btn-sm" onclick="copyQRContent()" title="Copiar conteúdo">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadQRCode('svg')" title="Baixar SVG">
+                        <i class="fas fa-file-code"></i> SVG
+                    </button>
+                </div>
+
+                <div id="testButtonContainer"></div>
+
+                <div class="download-container" id="downloadContainer">
+                    <button class="btn btn-download" onclick="downloadQRCode('png')">
+                        <i class="fas fa-download"></i> PNG
+                    </button>
+                    <button class="btn btn-download" onclick="downloadQRCode('jpg')">
+                        <i class="fas fa-download"></i> JPG
+                    </button>
+                </div>
+
+                <!-- Wi-Fi Info -->
+                <div class="wifi-info-container hidden" id="wifiInfoContainer">
+                    <div class="wifi-info-header">
+                        <i class="fas fa-wifi"></i>
+                        <span>Dispositivos Conectados</span>
+                        <button class="wifi-refresh-btn" onclick="refreshWifiDevices()" title="Atualizar" id="wifiRefreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <span class="saved-badge"><i class="fas fa-save"></i> salvo</span>
+                        <span class="wifi-permission-badge"><i class="fas fa-shield-alt"></i> Permissão ativa</span>
+                    </div>
+                    <div id="wifiDevicesContent">
+                        <div class="wifi-loading">
+                            <i class="fas fa-spinner"></i>
+                            <span>Verificando dispositivos...</span>
+                        </div>
+                    </div>
+                    <div class="wifi-timestamp" id="wifiTimestamp">Última atualização: --</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PERMISSÃO ===== -->
+    <div class="modal-overlay" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-wifi"></i>
+            </div>
+            <h2>Nova Conexão Detectada</h2>
+            <p>Um novo dispositivo está tentando se conectar à rede Wi-Fi <strong id="modalSsid">Café Wi-Fi</strong>.</p>
+            <div class="device-detail">
+                <div class="detail-row">
+                    <span class="label">Dispositivo:</span>
+                    <span id="modalDeviceName">iPhone 15 Pro</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Endereço MAC:</span>
+                    <span id="modalDeviceMac">XX:XX:XX:XX:XX:XX</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Sinal:</span>
+                    <span id="modalDeviceSignal">85%</span>
+                </div>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">Permitir que este dispositivo se conecte à rede?</p>
+            <div class="modal-actions">
+                <button class="btn btn-reject" onclick="rejectConnection()">
+                    <i class="fas fa-times"></i> Negar
+                </button>
+                <button class="btn btn-approve" onclick="approveConnection()">
+                    <i class="fas fa-check"></i> Aceitar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL ADICIONAR REDE ===== -->
+    <div class="modal-overlay" id="addNetworkModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <h2>Adicionar Nova Rede Wi-Fi</h2>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Salve uma nova rede para gerenciar dispositivos conectados.</p>
+
+            <div class="modal-input-group">
+                <label>Nome da Rede (SSID) <span style="color: var(--btn-danger);">*</span></label>
+                <input type="text" id="newNetworkSSID" placeholder="Ex: Minha Rede 5G">
+            </div>
+            <div class="modal-input-group">
+                <label>Senha</label>
+                <input type="text" id="newNetworkPassword" placeholder="Digite a senha da rede">
+            </div>
+            <div class="modal-input-group">
+                <label>Tipo de Segurança</label>
+                <select id="newNetworkSecurity">
+                    <option value="WPA" selected>WPA/WPA2</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">Sem senha (nopass)</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-reject" onclick="closeAddNetworkModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn btn-approve" onclick="saveNewNetwork()">
+                    <i class="fas fa-save"></i> Salvar Rede
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // =============================================
+            // VARIÁVEIS GLOBAIS
+            // =============================================
+            const qrContainer = document.getElementById('qrcode');
+            const qrLabel = document.getElementById('qrLabel');
+            const qrSub = document.getElementById('qrSub');
+            const testContainer = document.getElementById('testButtonContainer');
+            const wifiInfoContainer = document.getElementById('wifiInfoContainer');
+            const wifiDevicesContent = document.getElementById('wifiDevicesContent');
+            const wifiTimestamp = document.getElementById('wifiTimestamp');
+            const permissionModal = document.getElementById('permissionModal');
+            const addNetworkModal = document.getElementById('addNetworkModal');
+            const wifiNetworksList = document.getElementById('wifiNetworksList');
+            const historyList = document.getElementById('historyList');
+
+            let currentTab = 'url';
+            let currentTheme = 'light';
+            let lastGeneratedText = '';
+            let lastGeneratedIcon = null;
+            let wifiDevices = [];
+            let isWifiTabActive = false;
+            let lastUpdateTime = null;
+            let pendingDevice = null;
+            let savedNetworks = [];
+            let activeNetworkId = null;
+            let qrHistory = [];
+
+            const WIFI_STORAGE_KEY = 'wifi_devices_saved';
+            const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
+            const ACTIVE_NETWORK_KEY = 'wifi_active_network';
+            const PERMISSION_STORAGE_KEY = 'wifi_permission_enabled';
+            const HISTORY_STORAGE_KEY = 'qr_history_saved';
+            const THEME_STORAGE_KEY = 'theme';
+
+            // =============================================
+            // ICONE MAP
+            // =============================================
+            const ICON_MAP = {
+                url: { icon: 'fa-link', color: 'var(--icon-color)' },
+                whatsapp: { icon: 'fa-whatsapp', color: '#25D366' },
+                instagram: { icon: 'fa-instagram', color: '#E4405F' },
+                facebook: { icon: 'fa-facebook', color: '#1877F2' },
+                youtube: { icon: 'fa-youtube', color: '#FF0000' },
+                email: { icon: 'fa-envelope', color: '#ea4335' },
+                phone: { icon: 'fa-phone', color: '#34a853' },
+                wifi: { icon: 'fa-wifi', color: '#3b82f6' }
+            };
+
+            // =============================================
+            // DISPOSITIVOS SIMULADOS
+            // =============================================
+            const deviceNames = [
+                'iPhone 15 Pro', 'Galaxy S24', 'MacBook Air', 'iPad Pro',
+                'Notebook Dell', 'PC Desktop', 'Chromebook', 'Surface Pro',
+                'Smart TV LG', 'Amazon Echo', 'Google Nest', 'PlayStation 5',
+                'Xbox Series X', 'iPhone 14', 'Galaxy Tab', 'Lenovo ThinkPad',
+                'Samsung Smart TV', 'Apple Watch', 'Xiaomi Mi 13', 'OnePlus 12'
+            ];
+
+            const macAddresses = [
+                'AA:BB:CC:DD:EE:01', 'AA:BB:CC:DD:EE:02', 'AA:BB:CC:DD:EE:03',
+                'BB:CC:DD:EE:FF:01', 'BB:CC:DD:EE:FF:02', 'CC:DD:EE:FF:00:01',
+                'DD:EE:FF:00:11:01', 'EE:FF:00:11:22:01', 'FF:00:11:22:33:01',
+                '11:22:33:44:55:01', '22:33:44:55:66:01'
+            ];
+
+            // =============================================
+            // TOAST SYSTEM
+            // =============================================
+            function showToast(message, type = 'info', duration = 3500) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+
+                toast.innerHTML = `
+                    <i class="fas ${icons[type] || icons.info} toast-icon"></i>
+                    <span>${message}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                    <div class="toast-progress" style="width:100%;"></div>
+                `;
+
+                container.appendChild(toast);
+
+                const progress = toast.querySelector('.toast-progress');
+                let startTime = Date.now();
+                const interval = setInterval(() => {
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, 1 - (elapsed / duration));
+                    progress.style.width = (remaining * 100) + '%';
+                    if (remaining <= 0) {
+                        clearInterval(interval);
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateY(20px)';
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 50);
+
+                setTimeout(() => {
+                    clearInterval(interval);
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+
+                return toast;
+            }
+
+            // =============================================
+            // HISTÓRICO
+            // =============================================
+            function loadHistory() {
+                try {
+                    const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
+                    if (saved) {
+                        qrHistory = JSON.parse(saved);
+                        return true;
+                    }
+                } catch (e) { console.warn('Erro ao carregar histórico:', e); }
+                qrHistory = [];
+                return false;
+            }
+
+            function saveHistory() {
+                try {
+                    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(qrHistory.slice(0, 50)));
+                } catch (e) { console.warn('Erro ao salvar histórico:', e); }
+            }
+
+            function addToHistory(type, content, label) {
+                qrHistory.unshift({
+                    id: 'h_' + Date.now(),
+                    type: type,
+                    content: content,
+                    label: label || content.substring(0, 40),
+                    date: new Date().toISOString()
+                });
+                if (qrHistory.length > 50) qrHistory = qrHistory.slice(0, 50);
+                saveHistory();
+                renderHistory();
+            }
+
+            function renderHistory() {
+                if (qrHistory.length === 0) {
+                    historyList.innerHTML = '<div class="history-empty">Nenhum QR Code gerado ainda</div>';
+                    return;
+                }
+
+                let html = '';
+                qrHistory.forEach(item => {
+                    const typeLabel = item.type.toUpperCase();
+                    html += `
+                        <div class="history-item" onclick="loadHistoryItem('${item.id}')">
+                            <span class="h-type">${typeLabel}</span>
+                            <span class="h-content">${item.label}</span>
+                            <div class="h-actions">
+                                <button class="btn btn-outline btn-small" onclick="event.stopPropagation();deleteHistoryItem('${item.id}')" title="Remover">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                historyList.innerHTML = html;
+            }
+
+            window.loadHistoryItem = function(id) {
+                const item = qrHistory.find(h => h.id === id);
+                if (item) {
+                    lastGeneratedText = item.content;
+                    generateQRCode(item.content, item.label || item.type, item.content, ICON_MAP[item.type] || null);
+                    showToast(`✅ Carregado: ${item.type}`, 'success');
+                }
+            };
+
+            window.deleteHistoryItem = function(id) {
+                qrHistory = qrHistory.filter(h => h.id !== id);
+                saveHistory();
+                renderHistory();
+                showToast('🗑️ Item removido do histórico', 'warning');
+            };
+
+            window.clearHistory = function() {
+                if (qrHistory.length === 0) {
+                    showToast('Histórico já está vazio', 'info');
+                    return;
+                }
+                if (confirm('Deseja limpar todo o histórico?')) {
+                    qrHistory = [];
+                    saveHistory();
+                    renderHistory();
+                    showToast('🗑️ Histórico limpo', 'warning');
+                }
+            };
+
+            // =============================================
+            // BACKUP / EXPORT / IMPORT
+            // =============================================
+            window.exportData = function() {
+                const data = {
+                    version: '1.0',
+                    exportedAt: new Date().toISOString(),
+                    networks: savedNetworks,
+                    activeNetwork: activeNetworkId,
+                    history: qrHistory,
+                    wifiDevices: wifiDevices
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `qr_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('✅ Backup exportado com sucesso!', 'success');
+            };
+
+            window.importData = function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            const data = JSON.parse(ev.target.result);
+                            if (data.networks) {
+                                savedNetworks = data.networks;
+                                saveNetworks();
+                            }
+                            if (data.activeNetwork) {
+                                activeNetworkId = data.activeNetwork;
+                                saveActiveNetwork();
+                            }
+                            if (data.history) {
+                                qrHistory = data.history;
+                                saveHistory();
+                                renderHistory();
+                            }
+                            if (data.wifiDevices) {
+                                wifiDevices = data.wifiDevices;
+                                saveWifiDevices(wifiDevices);
+                            }
+                            renderNetworksList();
+                            applyActiveNetwork();
+                            showToast('✅ Dados importados com sucesso!', 'success');
+                        } catch (err) {
+                            showToast('❌ Erro ao importar: ' + err.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            };
+
+            // =============================================
+            // REDES WI-FI
+            // =============================================
+            function loadSavedNetworks() {
+                try {
+                    const saved = localStorage.getItem(NETWORKS_STORAGE_KEY);
+                    if (saved) {
+                        savedNetworks = JSON.parse(saved);
+                        return true;
+                    }
+                } catch (e) { console.warn('Erro ao carregar redes salvas:', e); }
+                savedNetworks = [{
+                    id: 'net_default',
+                    ssid: 'Café Wi-Fi',
+                    password: '12345678',
+                    security: 'WPA',
+                    createdAt: new Date().toISOString()
+                }];
+                saveNetworks();
+                return true;
+            }
+
+            function saveNetworks() {
+                try {
+                    localStorage.setItem(NETWORKS_STORAGE_KEY, JSON.stringify(savedNetworks));
+                } catch (e) { console.warn('Erro ao salvar redes:', e); }
+            }
+
+            function loadActiveNetwork() {
+                try {
+                    const saved = localStorage.getItem(ACTIVE_NETWORK_KEY);
+                    if (saved && savedNetworks.some(n => n.id === saved)) {
+                        activeNetworkId = saved;
+                        return true;
+                    }
+                } catch (e) { console.warn('Erro ao carregar rede ativa:', e); }
+                if (savedNetworks.length > 0) {
+                    activeNetworkId = savedNetworks[0].id;
+                    localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
+                }
+                return false;
+            }
+
+            function saveActiveNetwork() {
+                try {
+                    if (activeNetworkId) {
+                        localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
+                    }
+                } catch (e) { console.warn('Erro ao salvar rede ativa:', e); }
+            }
+
+            function getActiveNetwork() {
+                return savedNetworks.find(n => n.id === activeNetworkId) || savedNetworks[0];
+            }
+
+            function applyActiveNetwork() {
+                const network = getActiveNetwork();
+                if (network) {
+                    document.getElementById('wifiSSID').value = network.ssid || '';
+                    document.getElementById('wifiPassword').value = network.password || '';
+                    document.getElementById('wifiSecurity').value = network.security || 'WPA';
+                    renderNetworksList();
+                    setTimeout(generateFromCurrentTab, 100);
+                }
+            }
+
+            function renderNetworksList() {
+                if (savedNetworks.length === 0) {
+                    wifiNetworksList.innerHTML = `
+                        <div style="color: var(--text-muted); font-size: 13px; padding: 8px; text-align: center;">
+                            <i class="fas fa-info-circle"></i> Nenhuma rede salva
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                savedNetworks.forEach(network => {
+                    const isActive = network.id === activeNetworkId;
+                    html += `
+                        <div class="wifi-network-item ${isActive ? 'active' : ''}" onclick="selectNetwork('${network.id}')">
+                            <div class="network-info">
+                                <i class="fas fa-wifi"></i>
+                                <span class="network-name">${network.ssid}</span>
+                                <span class="network-details">${network.security}</span>
+                                ${isActive ? `<span class="network-active-badge"><i class="fas fa-check"></i> ativa</span>` : ''}
+                            </div>
+                            <div class="network-actions">
+                                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNetwork('${network.id}')" title="Excluir rede">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                wifiNetworksList.innerHTML = html;
+            }
+
+            window.selectNetwork = function(networkId) {
+                const network = savedNetworks.find(n => n.id === networkId);
+                if (network) {
+                    activeNetworkId = networkId;
+                    saveActiveNetwork();
+                    applyActiveNetwork();
+                    showToast(`📶 Rede "${network.ssid}" selecionada`, 'success');
+                }
+            };
+
+            window.saveCurrentNetwork = function() {
+                const ssid = document.getElementById('wifiSSID').value.trim();
+                const password = document.getElementById('wifiPassword').value.trim();
+                const security = document.getElementById('wifiSecurity').value;
+
+                if (!ssid) {
+                    showToast('⚠️ Por favor, insira o nome da rede (SSID).', 'warning');
+                    return;
+                }
+
+                const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
+                if (existing) {
+                    if (confirm(`A rede "${ssid}" já existe. Deseja atualizá-la?`)) {
+                        existing.password = password;
+                        existing.security = security;
+                        saveNetworks();
+                        renderNetworksList();
+                        showToast(`✅ Rede "${ssid}" atualizada!`, 'success');
+                    }
+                    return;
+                }
+
+                const newNetwork = {
+                    id: 'net_' + Date.now(),
+                    ssid: ssid,
+                    password: password,
+                    security: security,
+                    createdAt: new Date().toISOString()
+                };
+
+                savedNetworks.push(newNetwork);
+                saveNetworks();
+                activeNetworkId = newNetwork.id;
+                saveActiveNetwork();
+                renderNetworksList();
+                showToast(`✅ Rede "${ssid}" salva com sucesso!`, 'success');
+            };
+
+            window.showAddNetworkModal = function() {
+                document.getElementById('newNetworkSSID').value = '';
+                document.getElementById('newNetworkPassword').value = '';
+                document.getElementById('newNetworkSecurity').value = 'WPA';
+                addNetworkModal.classList.add('active');
+            };
+
+            window.closeAddNetworkModal = function() {
+                addNetworkModal.classList.remove('active');
+            };
+
+            window.saveNewNetwork = function() {
+                const ssid = document.getElementById('newNetworkSSID').value.trim();
+                const password = document.getElementById('newNetworkPassword').value.trim();
+                const security = document.getElementById('newNetworkSecurity').value;
+
+                if (!ssid) {
+                    showToast('⚠️ Por favor, insira o nome da rede (SSID).', 'warning');
+                    return;
+                }
+
+                const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
+                if (existing) {
+                    showToast(`⚠️ A rede "${ssid}" já existe.`, 'warning');
+                    return;
+                }
+
+                const newNetwork = {
+                    id: 'net_' + Date.now(),
+                    ssid: ssid,
+                    password: password,
+                    security: security,
+                    createdAt: new Date().toISOString()
+                };
+
+                savedNetworks.push(newNetwork);
+                saveNetworks();
+                activeNetworkId = newNetwork.id;
+                saveActiveNetwork();
+                renderNetworksList();
+                applyActiveNetwork();
+                closeAddNetworkModal();
+                showToast(`✅ Rede "${ssid}" adicionada com sucesso!`, 'success');
+            };
+
+            window.deleteNetwork = function(networkId) {
+                const network = savedNetworks.find(n => n.id === networkId);
+                if (!network) return;
+
+                if (savedNetworks.length <= 1) {
+                    showToast('⚠️ Não é possível excluir a última rede.', 'warning');
+                    return;
+                }
+
+                if (confirm(`Deseja excluir a rede "${network.ssid}"?`)) {
+                    savedNetworks = savedNetworks.filter(n => n.id !== networkId);
+                    saveNetworks();
+
+                    if (activeNetworkId === networkId) {
+                        activeNetworkId = savedNetworks[0]?.id || null;
+                        saveActiveNetwork();
+                    }
+
+                    renderNetworksList();
+                    applyActiveNetwork();
+                    showToast(`🗑️ Rede "${network.ssid}" excluída.`, 'error');
+                }
+            };
+
+            // =============================================
+            // WI-FI DEVICES
+            // =============================================
+            function generateRandomMac() {
+                return macAddresses[Math.floor(Math.random() * macAddresses.length)];
+            }
+
+            function generateRandomDevices(count) {
+                const devices = [];
+                const usedNames = new Set();
+
+                for (let i = 0; i < count; i++) {
+                    let name;
+                    let attempts = 0;
+                    do {
+                        name = deviceNames[Math.floor(Math.random() * deviceNames.length)];
+                        attempts++;
+                    } while (usedNames.has(name) && attempts < 20);
+
+                    usedNames.add(name);
+                    const status = Math.random() > 0.25 ? 'connected' : 'idle';
+                    const signal = Math.floor(Math.random() * 40) + 60;
+                    const mac = generateRandomMac();
+                    const isBlocked = Math.random() > 0.88;
+
+                    devices.push({
+                        id: 'dev_' + Date.now() + '_' + i,
+                        name: name + (Math.random() > 0.7 ? ' 2' : ''),
+                        status: isBlocked ? 'blocked' : status,
+                        signal: signal,
+                        mac: mac,
+                        connectedAt: status === 'connected' ? new Date().toISOString() : null,
+                        blocked: isBlocked
+                    });
+                }
+                return devices;
+            }
+
+            function saveWifiDevices(devices) {
+                try {
+                    const data = {
+                        devices: devices,
+                        timestamp: new Date().toISOString(),
+                        networkId: activeNetworkId
+                    };
+                    localStorage.setItem(WIFI_STORAGE_KEY, JSON.stringify(data));
+                    lastUpdateTime = new Date();
+                    updateTimestamp();
+                } catch (e) { console.warn('Erro ao salvar Wi-Fi:', e); }
+            }
+
+            function loadWifiDevices() {
+                try {
+                    const saved = localStorage.getItem(WIFI_STORAGE_KEY);
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        if (data.devices && Array.isArray(data.devices) && data.devices.length > 0) {
+                            if (data.networkId === activeNetworkId) {
+                                wifiDevices = data.devices;
+                                if (data.timestamp) {
+                                    lastUpdateTime = new Date(data.timestamp);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                } catch (e) { console.warn('Erro ao carregar Wi-Fi salvo:', e); }
+                return false;
+            }
+
+            function updateTimestamp() {
+                if (lastUpdateTime) {
+                    const now = new Date();
+                    const diffMs = now - lastUpdateTime;
+                    const diffMin = Math.floor(diffMs / 60000);
+                    const diffSec = Math.floor((diffMs % 60000) / 1000);
+
+                    let timeStr;
+                    if (diffMin > 0) {
+                        timeStr = `${diffMin}m ${diffSec}s atrás`;
+                    } else {
+                        timeStr = `${diffSec}s atrás`;
+                    }
+
+                    wifiTimestamp.textContent = `Última atualização: ${timeStr}`;
+                } else {
+                    wifiTimestamp.textContent = 'Última atualização: --';
+                }
+            }
+
+            function updateWifiDisplay() {
+                if (wifiDevices.length === 0) {
+                    wifiDevicesContent.innerHTML = `
+                        <div style="color: var(--text-muted); font-size: 13px; padding: 4px 0;">
+                            <i class="fas fa-info-circle"></i> Nenhum dispositivo encontrado
+                        </div>
+                    `;
+                    return;
+                }
+
+                const connected = wifiDevices.filter(d => d.status === 'connected');
+                const blocked = wifiDevices.filter(d => d.blocked === true);
+                const total = wifiDevices.length;
+
+                let html = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                        <span class="wifi-device-count">${connected.length} conectado${connected.length !== 1 ? 's' : ''}</span>
+                        <span style="font-size: 12px; color: var(--text-muted);">
+                            ${total} total · ${blocked.length} bloqueado${blocked.length !== 1 ? 's' : ''}
+                        </span>
+                    </div>
+                    <div class="wifi-devices-grid">
+                `;
+
+                wifiDevices.forEach(device => {
+                    const isBlocked = device.blocked === true;
+                    const isConnected = device.status === 'connected';
+                    const isIdle = device.status === 'idle';
+
+                    let statusIcon;
+                    let statusColor;
+                    let itemClass = '';
+
+                    if (isBlocked) {
+                        statusIcon = 'fa-ban';
+                        statusColor = 'var(--btn-danger)';
+                        itemClass = 'blocked';
+                    } else if (isConnected) {
+                        statusIcon = 'fa-check-circle';
+                        statusColor = 'var(--btn-success)';
+                    } else {
+                        statusIcon = 'fa-clock';
+                        statusColor = 'var(--text-muted)';
+                    }
+
+                    html += `
+                        <div class="wifi-device-item ${itemClass}">
+                            <div class="device-info">
+                                <i class="fas ${statusIcon}" style="color: ${statusColor};"></i>
+                                <span class="device-name">${device.name}</span>
+                                <span class="device-signal">${device.signal}%</span>
+                                ${isBlocked ? `<span class="blocked-badge-text">BLOQUEADO</span>` : ''}
+                            </div>
+                            <div class="device-actions">
+                                ${!isBlocked ? `
+                                    ${isConnected ? `
+                                        <button class="btn btn-danger btn-small" onclick="disconnectDevice('${device.id}')" title="Desconectar">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="btn btn-success btn-small" onclick="reconnectDevice('${device.id}')" title="Reconectar">
+                                            <i class="fas fa-plug"></i>
+                                        </button>
+                                    `}
+                                ` : ''}
+                                <button class="btn ${isBlocked ? 'btn-success' : 'btn-warning'} btn-small" onclick="toggleBlockDevice('${device.id}')" title="${isBlocked ? 'Desbloquear' : 'Bloquear'}">
+                                    <i class="fas ${isBlocked ? 'fa-unlock' : 'fa-lock'}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+                wifiDevicesContent.innerHTML = html;
+                updateTimestamp();
+            }
+
+            function showPermissionModal(device, ssid) {
+                pendingDevice = device;
+                document.getElementById('modalSsid').textContent = ssid || 'Café Wi-Fi';
+                document.getElementById('modalDeviceName').textContent = device.name;
+                document.getElementById('modalDeviceMac').textContent = device.mac || 'XX:XX:XX:XX:XX:XX';
+                document.getElementById('modalDeviceSignal').textContent = device.signal + '%';
+                permissionModal.classList.add('active');
+            }
+
+            window.approveConnection = function() {
+                if (pendingDevice) {
+                    if (pendingDevice.blocked) {
+                        showToast(`⛔ ${pendingDevice.name} está bloqueado.`, 'error');
+                        pendingDevice = null;
+                        permissionModal.classList.remove('active');
+                        return;
+                    }
+
+                    pendingDevice.status = 'connected';
+                    pendingDevice.connectedAt = new Date().toISOString();
+                    wifiDevices.push(pendingDevice);
+                    saveWifiDevices(wifiDevices);
+                    updateWifiDisplay();
+
+                    showToast(`✅ ${pendingDevice.name} conectado à rede!`, 'success');
+                    pendingDevice = null;
+                }
+                permissionModal.classList.remove('active');
+            };
+
+            window.rejectConnection = function() {
+                if (pendingDevice) {
+                    showToast(`❌ Conexão de ${pendingDevice.name} negada.`, 'error');
+                    pendingDevice = null;
+                }
+                permissionModal.classList.remove('active');
+            };
+
+            window.toggleBlockDevice = function(deviceId) {
+                const device = wifiDevices.find(d => d.id === deviceId);
+                if (!device) return;
+
+                if (device.blocked) {
+                    if (confirm(`Deseja desbloquear "${device.name}"?`)) {
+                        device.blocked = false;
+                        device.status = 'idle';
+                        saveWifiDevices(wifiDevices);
+                        updateWifiDisplay();
+                        showToast(`🔓 ${device.name} foi desbloqueado.`, 'success');
+                    }
+                } else {
+                    if (confirm(`Deseja bloquear "${device.name}" permanentemente da rede?`)) {
+                        device.blocked = true;
+                        device.status = 'blocked';
+                        saveWifiDevices(wifiDevices);
+                        updateWifiDisplay();
+                        showToast(`🔒 ${device.name} foi bloqueado da rede.`, 'warning');
+                    }
+                }
+            };
+
+            window.disconnectDevice = function(deviceId) {
+                const device = wifiDevices.find(d => d.id === deviceId);
+                if (device && device.status === 'connected') {
+                    if (confirm(`Deseja realmente desconectar "${device.name}" da rede?`)) {
+                        device.status = 'idle';
+                        saveWifiDevices(wifiDevices);
+                        updateWifiDisplay();
+                        showToast(`🔌 ${device.name} foi desconectado.`, 'error');
+                    }
+                }
+            };
+
+            window.reconnectDevice = function(deviceId) {
+                const device = wifiDevices.find(d => d.id === deviceId);
+                if (device && device.status === 'idle') {
+                    if (device.blocked) {
+                        showToast(`⛔ ${device.name} está bloqueado. Desbloqueie primeiro.`, 'error');
+                        return;
+                    }
+                    const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
+                    showPermissionModal(device, ssid);
+                }
+            };
+
+            function simulateNewConnection() {
+                if (!isWifiTabActive) return;
+                if (Math.random() < 0.10 && wifiDevices.length < 15) {
+                    const newDevice = {
+                        id: 'dev_new_' + Date.now(),
+                        name: deviceNames[Math.floor(Math.random() * deviceNames.length)] + ' (novo)',
+                        status: 'pending',
+                        signal: Math.floor(Math.random() * 40) + 60,
+                        mac: generateRandomMac(),
+                        connectedAt: null,
+                        blocked: false
+                    };
+
+                    const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
+                    showPermissionModal(newDevice, ssid);
+                }
+            }
+
+            function simulateWifiDevices() {
+                const count = Math.floor(Math.random() * 8) + 2;
+                wifiDevices = generateRandomDevices(count);
+                saveWifiDevices(wifiDevices);
+                updateWifiDisplay();
+
+                const permissionEnabled = localStorage.getItem(PERMISSION_STORAGE_KEY) !== 'false';
+                if (permissionEnabled) {
+                    setTimeout(simulateNewConnection, 1000);
+                }
+            }
+
+            window.refreshWifiDevices = function() {
+                if (!isWifiTabActive) return;
+
+                const btn = document.getElementById('wifiRefreshBtn');
+                btn.classList.add('spinning');
+
+                wifiDevicesContent.innerHTML = `
                     <div class="wifi-loading">
                         <i class="fas fa-spinner"></i>
                         <span>Verificando dispositivos...</span>
                     </div>
-                </div>
-                <div class="wifi-timestamp" id="wifiTimestamp">Última atualização: --</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Permissão -->
-<div class="modal-overlay" id="permissionModal">
-    <div class="modal-content">
-        <div class="modal-icon">
-            <i class="fas fa-wifi"></i>
-        </div>
-        <h2>Nova Conexão Detectada</h2>
-        <p>Um novo dispositivo está tentando se conectar à rede Wi-Fi <strong id="modalSsid">Café Wi-Fi</strong>.</p>
-        <div class="device-detail">
-            <div class="detail-row">
-                <span class="label">Dispositivo:</span>
-                <span id="modalDeviceName">iPhone 15 Pro</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Endereço MAC:</span>
-                <span id="modalDeviceMac">XX:XX:XX:XX:XX:XX</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Sinal:</span>
-                <span id="modalDeviceSignal">85%</span>
-            </div>
-        </div>
-        <p style="font-size: 13px; color: var(--text-muted);">Permitir que este dispositivo se conecte à rede?</p>
-        <div class="modal-actions">
-            <button class="btn btn-reject" onclick="rejectConnection()">
-                <i class="fas fa-times"></i> Negar
-            </button>
-            <button class="btn btn-approve" onclick="approveConnection()">
-                <i class="fas fa-check"></i> Aceitar
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Adicionar Rede -->
-<div class="modal-overlay" id="addNetworkModal">
-    <div class="modal-content">
-        <div class="modal-icon">
-            <i class="fas fa-plus-circle"></i>
-        </div>
-        <h2>Adicionar Nova Rede Wi-Fi</h2>
-        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Salve uma nova rede para gerenciar dispositivos conectados.</p>
-        
-        <div class="modal-input-group">
-            <label>Nome da Rede (SSID) <span style="color: var(--btn-danger);">*</span></label>
-            <input type="text" id="newNetworkSSID" placeholder="Ex: Minha Rede 5G">
-        </div>
-        <div class="modal-input-group">
-            <label>Senha</label>
-            <input type="text" id="newNetworkPassword" placeholder="Digite a senha da rede">
-        </div>
-        <div class="modal-input-group">
-            <label>Tipo de Segurança</label>
-            <select id="newNetworkSecurity">
-                <option value="WPA" selected>WPA/WPA2</option>
-                <option value="WEP">WEP</option>
-                <option value="nopass">Sem senha (nopass)</option>
-            </select>
-        </div>
-        
-        <div class="modal-actions">
-            <button class="btn btn-reject" onclick="closeAddNetworkModal()">
-                <i class="fas fa-times"></i> Cancelar
-            </button>
-            <button class="btn btn-approve" onclick="saveNewNetwork()">
-                <i class="fas fa-save"></i> Salvar Rede
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-    (function() {
-        "use strict";
-
-        const qrContainer = document.getElementById('qrcode');
-        const qrLabel = document.getElementById('qrLabel');
-        const qrSub = document.getElementById('qrSub');
-        const testContainer = document.getElementById('testButtonContainer');
-        const wifiInfoContainer = document.getElementById('wifiInfoContainer');
-        const wifiDevicesContent = document.getElementById('wifiDevicesContent');
-        const wifiTimestamp = document.getElementById('wifiTimestamp');
-        const permissionModal = document.getElementById('permissionModal');
-        const addNetworkModal = document.getElementById('addNetworkModal');
-        const wifiNetworksList = document.getElementById('wifiNetworksList');
-
-        let currentTab = 'url';
-        let currentTheme = 'light';
-        let lastGeneratedText = '';
-        let wifiDevices = [];
-        let isWifiTabActive = false;
-        let lastUpdateTime = null;
-        let pendingDevice = null;
-        let savedNetworks = [];
-        let activeNetworkId = null;
-        let currentIcon = null;
-
-        const WIFI_STORAGE_KEY = 'wifi_devices_saved';
-        const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
-        const ACTIVE_NETWORK_KEY = 'wifi_active_network';
-        const PERMISSION_STORAGE_KEY = 'wifi_permission_enabled';
-
-        // Mapeamento de ícones por tipo de conteúdo
-        const ICON_MAP = {
-            url: { icon: 'fa-link', color: 'var(--icon-color)' },
-            whatsapp: { icon: 'fa-whatsapp', color: '#25D366' },
-            instagram: { icon: 'fa-instagram', color: '#E4405F' },
-            facebook: { icon: 'fa-facebook', color: '#1877F2' },
-            youtube: { icon: 'fa-youtube', color: '#FF0000' },
-            wifi: { icon: 'fa-wifi', color: '#3b82f6' }
-        };
-
-        // Nomes de dispositivos simulados
-        const deviceNames = [
-            'iPhone 15 Pro', 'Galaxy S24', 'MacBook Air', 'iPad Pro', 
-            'Notebook Dell', 'PC Desktop', 'Chromebook', 'Surface Pro',
-            'Smart TV LG', 'Amazon Echo', 'Google Nest', 'PlayStation 5',
-            'Xbox Series X', 'iPhone 14', 'Galaxy Tab', 'Lenovo ThinkPad'
-        ];
-
-        const macAddresses = [
-            'AA:BB:CC:DD:EE:01', 'AA:BB:CC:DD:EE:02', 'AA:BB:CC:DD:EE:03',
-            'BB:CC:DD:EE:FF:01', 'BB:CC:DD:EE:FF:02', 'CC:DD:EE:FF:00:01',
-            'DD:EE:FF:00:11:01', 'EE:FF:00:11:22:01', 'FF:00:11:22:33:01'
-        ];
-
-        // --- Carregar redes salvas ---
-        function loadSavedNetworks() {
-            try {
-                const saved = localStorage.getItem(NETWORKS_STORAGE_KEY);
-                if (saved) {
-                    savedNetworks = JSON.parse(saved);
-                    return true;
-                }
-            } catch (e) {
-                console.warn('Erro ao carregar redes salvas:', e);
-            }
-            savedNetworks = [{
-                id: 'net_default',
-                ssid: 'Café Wi-Fi',
-                password: '12345678',
-                security: 'WPA',
-                createdAt: new Date().toISOString()
-            }];
-            saveNetworks();
-            return true;
-        }
-
-        // --- Salvar redes ---
-        function saveNetworks() {
-            try {
-                localStorage.setItem(NETWORKS_STORAGE_KEY, JSON.stringify(savedNetworks));
-            } catch (e) {
-                console.warn('Erro ao salvar redes:', e);
-            }
-        }
-
-        // --- Carregar rede ativa ---
-        function loadActiveNetwork() {
-            try {
-                const saved = localStorage.getItem(ACTIVE_NETWORK_KEY);
-                if (saved) {
-                    activeNetworkId = saved;
-                    return true;
-                }
-            } catch (e) {
-                console.warn('Erro ao carregar rede ativa:', e);
-            }
-            if (savedNetworks.length > 0) {
-                activeNetworkId = savedNetworks[0].id;
-                localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
-            }
-            return false;
-        }
-
-        // --- Salvar rede ativa ---
-        function saveActiveNetwork() {
-            try {
-                if (activeNetworkId) {
-                    localStorage.setItem(ACTIVE_NETWORK_KEY, activeNetworkId);
-                }
-            } catch (e) {
-                console.warn('Erro ao salvar rede ativa:', e);
-            }
-        }
-
-        // --- Obter rede ativa ---
-        function getActiveNetwork() {
-            return savedNetworks.find(n => n.id === activeNetworkId) || savedNetworks[0];
-        }
-
-        // --- Aplicar rede ativa nos campos ---
-        function applyActiveNetwork() {
-            const network = getActiveNetwork();
-            if (network) {
-                document.getElementById('wifiSSID').value = network.ssid || '';
-                document.getElementById('wifiPassword').value = network.password || '';
-                document.getElementById('wifiSecurity').value = network.security || 'WPA';
-                renderNetworksList();
-                setTimeout(generateFromCurrentTab, 100);
-            }
-        }
-
-        // --- Renderizar lista de redes ---
-        function renderNetworksList() {
-            if (savedNetworks.length === 0) {
-                wifiNetworksList.innerHTML = `
-                    <div style="color: var(--text-muted); font-size: 13px; padding: 8px; text-align: center;">
-                        <i class="fas fa-info-circle"></i> Nenhuma rede salva
-                    </div>
                 `;
-                return;
-            }
 
-            let html = '';
-            savedNetworks.forEach(network => {
-                const isActive = network.id === activeNetworkId;
-                html += `
-                    <div class="wifi-network-item ${isActive ? 'active' : ''}" onclick="selectNetwork('${network.id}')">
-                        <div class="network-info">
-                            <i class="fas fa-wifi"></i>
-                            <span class="network-name">${network.ssid}</span>
-                            <span class="network-details">${network.security}</span>
-                            ${isActive ? `<span class="network-active-badge"><i class="fas fa-check"></i> ativa</span>` : ''}
-                        </div>
-                        <div class="network-actions">
-                            <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNetwork('${network.id}')" title="Excluir rede">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            wifiNetworksList.innerHTML = html;
-        }
-
-        // --- Selecionar rede ---
-        window.selectNetwork = function(networkId) {
-            const network = savedNetworks.find(n => n.id === networkId);
-            if (network) {
-                activeNetworkId = networkId;
-                saveActiveNetwork();
-                applyActiveNetwork();
-                showNotification(`📶 Rede "${network.ssid}" selecionada`, 'success');
-            }
-        };
-
-        // --- Salvar rede atual ---
-        window.saveCurrentNetwork = function() {
-            const ssid = document.getElementById('wifiSSID').value.trim();
-            const password = document.getElementById('wifiPassword').value.trim();
-            const security = document.getElementById('wifiSecurity').value;
-
-            if (!ssid) {
-                alert('Por favor, insira o nome da rede (SSID).');
-                return;
-            }
-
-            const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
-            if (existing) {
-                if (confirm(`A rede "${ssid}" já existe. Deseja atualizá-la?`)) {
-                    existing.password = password;
-                    existing.security = security;
-                    saveNetworks();
-                    renderNetworksList();
-                    showNotification(`✅ Rede "${ssid}" atualizada!`, 'success');
-                }
-                return;
-            }
-
-            const newNetwork = {
-                id: 'net_' + Date.now(),
-                ssid: ssid,
-                password: password,
-                security: security,
-                createdAt: new Date().toISOString()
+                setTimeout(() => {
+                    simulateWifiDevices();
+                    btn.classList.remove('spinning');
+                }, 800 + Math.random() * 600);
             };
 
-            savedNetworks.push(newNetwork);
-            saveNetworks();
-            activeNetworkId = newNetwork.id;
-            saveActiveNetwork();
-            renderNetworksList();
-            showNotification(`✅ Rede "${ssid}" salva com sucesso!`, 'success');
-        };
+            function toggleWifiInfo(show) {
+                if (show) {
+                    wifiInfoContainer.classList.remove('hidden');
+                    isWifiTabActive = true;
 
-        // --- Mostrar modal de adicionar rede ---
-        window.showAddNetworkModal = function() {
-            document.getElementById('newNetworkSSID').value = '';
-            document.getElementById('newNetworkPassword').value = '';
-            document.getElementById('newNetworkSecurity').value = 'WPA';
-            addNetworkModal.classList.add('active');
-        };
-
-        // --- Fechar modal de adicionar rede ---
-        window.closeAddNetworkModal = function() {
-            addNetworkModal.classList.remove('active');
-        };
-
-        // --- Salvar nova rede do modal ---
-        window.saveNewNetwork = function() {
-            const ssid = document.getElementById('newNetworkSSID').value.trim();
-            const password = document.getElementById('newNetworkPassword').value.trim();
-            const security = document.getElementById('newNetworkSecurity').value;
-
-            if (!ssid) {
-                alert('Por favor, insira o nome da rede (SSID).');
-                return;
-            }
-
-            const existing = savedNetworks.find(n => n.ssid.toLowerCase() === ssid.toLowerCase());
-            if (existing) {
-                alert(`A rede "${ssid}" já existe. Use a opção Salvar Rede para atualizá-la.`);
-                return;
-            }
-
-            const newNetwork = {
-                id: 'net_' + Date.now(),
-                ssid: ssid,
-                password: password,
-                security: security,
-                createdAt: new Date().toISOString()
-            };
-
-            savedNetworks.push(newNetwork);
-            saveNetworks();
-            activeNetworkId = newNetwork.id;
-            saveActiveNetwork();
-            renderNetworksList();
-            applyActiveNetwork();
-            closeAddNetworkModal();
-            showNotification(`✅ Rede "${ssid}" adicionada com sucesso!`, 'success');
-        };
-
-        // --- Excluir rede ---
-        window.deleteNetwork = function(networkId) {
-            const network = savedNetworks.find(n => n.id === networkId);
-            if (!network) return;
-
-            if (savedNetworks.length <= 1) {
-                alert('Não é possível excluir a última rede. Adicione outra rede primeiro.');
-                return;
-            }
-
-            if (confirm(`Deseja excluir a rede "${network.ssid}"?`)) {
-                savedNetworks = savedNetworks.filter(n => n.id !== networkId);
-                saveNetworks();
-                
-                if (activeNetworkId === networkId) {
-                    activeNetworkId = savedNetworks[0]?.id || null;
-                    saveActiveNetwork();
-                }
-                
-                renderNetworksList();
-                applyActiveNetwork();
-                showNotification(`🗑️ Rede "${network.ssid}" excluída.`, 'error');
-            }
-        };
-
-        // --- Gerar MAC aleatório ---
-        function generateRandomMac() {
-            return macAddresses[Math.floor(Math.random() * macAddresses.length)];
-        }
-
-        // --- Gerar dispositivos aleatórios ---
-        function generateRandomDevices(count) {
-            const devices = [];
-            const usedNames = new Set();
-            
-            for (let i = 0; i < count; i++) {
-                let name;
-                let attempts = 0;
-                do {
-                    name = deviceNames[Math.floor(Math.random() * deviceNames.length)];
-                    attempts++;
-                } while (usedNames.has(name) && attempts < 20);
-                
-                usedNames.add(name);
-                const status = Math.random() > 0.2 ? 'connected' : 'idle';
-                const signal = Math.floor(Math.random() * 40) + 60;
-                const mac = generateRandomMac();
-                const isBlocked = Math.random() > 0.85;
-                
-                devices.push({
-                    id: 'dev_' + Date.now() + '_' + i,
-                    name: name + (Math.random() > 0.7 ? ' 2' : ''),
-                    status: isBlocked ? 'blocked' : status,
-                    signal: signal,
-                    mac: mac,
-                    connectedAt: status === 'connected' ? new Date().toISOString() : null,
-                    blocked: isBlocked
-                });
-            }
-            return devices;
-        }
-
-        // --- Salvar dispositivos no localStorage ---
-        function saveWifiDevices(devices) {
-            try {
-                const data = {
-                    devices: devices,
-                    timestamp: new Date().toISOString(),
-                    networkId: activeNetworkId
-                };
-                localStorage.setItem(WIFI_STORAGE_KEY, JSON.stringify(data));
-                lastUpdateTime = new Date();
-                updateTimestamp();
-            } catch (e) {
-                console.warn('Erro ao salvar Wi-Fi:', e);
-            }
-        }
-
-        // --- Carregar dispositivos do localStorage ---
-        function loadWifiDevices() {
-            try {
-                const saved = localStorage.getItem(WIFI_STORAGE_KEY);
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    if (data.devices && Array.isArray(data.devices) && data.devices.length > 0) {
-                        if (data.networkId === activeNetworkId) {
-                            wifiDevices = data.devices;
-                            if (data.timestamp) {
-                                lastUpdateTime = new Date(data.timestamp);
+                    const hasSaved = loadWifiDevices();
+                    if (hasSaved && wifiDevices.length > 0) {
+                        updateWifiDisplay();
+                        setTimeout(() => {
+                            if (isWifiTabActive) {
+                                refreshWifiDevices();
                             }
-                            return true;
+                        }, 2000);
+                    } else {
+                        refreshWifiDevices();
+                    }
+                } else {
+                    wifiInfoContainer.classList.add('hidden');
+                    isWifiTabActive = false;
+                    permissionModal.classList.remove('active');
+                }
+            }
+
+            // =============================================
+            // TABS
+            // =============================================
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = {
+                url: document.getElementById('urlTab'),
+                whatsapp: document.getElementById('whatsappTab'),
+                instagram: document.getElementById('instagramTab'),
+                facebook: document.getElementById('facebookTab'),
+                youtube: document.getElementById('youtubeTab'),
+                email: document.getElementById('emailTab'),
+                phone: document.getElementById('phoneTab'),
+                wifi: document.getElementById('wifiTab'),
+            };
+
+            function getTabIdFromButton(btn) {
+                return btn.dataset.tab.replace('Tab', '');
+            }
+
+            function switchTab(tabId) {
+                Object.values(tabContents).forEach(el => el.classList.add('hidden'));
+                const map = {
+                    'url': tabContents.url,
+                    'whatsapp': tabContents.whatsapp,
+                    'instagram': tabContents.instagram,
+                    'facebook': tabContents.facebook,
+                    'youtube': tabContents.youtube,
+                    'email': tabContents.email,
+                    'phone': tabContents.phone,
+                    'wifi': tabContents.wifi,
+                };
+                if (map[tabId]) map[tabId].classList.remove('hidden');
+                tabButtons.forEach(btn => {
+                    btn.classList.toggle('active', getTabIdFromButton(btn) === tabId);
+                });
+                currentTab = tabId;
+
+                if (tabId === 'wifi') {
+                    toggleWifiInfo(true);
+                    loadSavedNetworks();
+                    loadActiveNetwork();
+                    renderNetworksList();
+                    applyActiveNetwork();
+                } else {
+                    toggleWifiInfo(false);
+                    setTimeout(generateFromCurrentTab, 100);
+                }
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const tabId = getTabIdFromButton(this);
+                    switchTab(tabId);
+                });
+            });
+
+            // =============================================
+            // TEMA
+            // =============================================
+            window.toggleTheme = function() {
+                const html = document.documentElement;
+                const themeToggle = document.getElementById('themeToggle');
+                const themeLabel = document.getElementById('themeLabel');
+                const icon = themeToggle.querySelector('i');
+
+                if (currentTheme === 'light') {
+                    html.setAttribute('data-theme', 'dark');
+                    currentTheme = 'dark';
+                    themeLabel.textContent = 'Escuro';
+                    icon.className = 'fas fa-sun';
+                } else {
+                    html.removeAttribute('data-theme');
+                    currentTheme = 'light';
+                    themeLabel.textContent = 'Claro';
+                    icon.className = 'fas fa-moon';
+                }
+                if (lastGeneratedText) {
+                    generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent, lastGeneratedIcon);
+                }
+                localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
+            };
+
+            // =============================================
+            // QR CODE GENERATION
+            // =============================================
+            function createIconOverlay(iconData) {
+                const existingOverlay = qrContainer.querySelector('.qr-icon-overlay');
+                if (existingOverlay) existingOverlay.remove();
+
+                if (!iconData) return;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'qr-icon-overlay';
+
+                const icon = document.createElement('i');
+                const iconClass = iconData.icon;
+                if (iconClass.startsWith('fa-')) {
+                    if (['fa-whatsapp', 'fa-instagram', 'fa-facebook', 'fa-youtube'].includes(iconClass)) {
+                        icon.className = `fab ${iconClass}`;
+                    } else {
+                        icon.className = `fas ${iconClass}`;
+                    }
+                } else {
+                    icon.className = `fas fa-link`;
+                }
+                if (iconData.color) {
+                    icon.style.color = iconData.color;
+                }
+                overlay.appendChild(icon);
+                qrContainer.appendChild(overlay);
+            }
+
+            function generateQRCode(text, label, sub, iconData) {
+                qrContainer.innerHTML = '';
+
+                if (!text) {
+                    qrContainer.innerHTML =
+                        '<div style="padding: 30px; color: var(--text-muted);">Insira dados válidos</div>';
+                    qrLabel.textContent = 'Aguardando dados';
+                    qrSub.textContent = 'Preencha os campos e gere o QR';
+                    testContainer.innerHTML = '';
+                    lastGeneratedIcon = null;
+                    return;
+                }
+
+                try {
+                    const isDark = currentTheme === 'dark';
+                    new QRCode(qrContainer, {
+                        text: text,
+                        width: 190,
+                        height: 190,
+                        colorDark: isDark ? "#e8edf5" : "#121826",
+                        colorLight: isDark ? "#1a1d27" : "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    if (iconData) {
+                        createIconOverlay(iconData);
+                        lastGeneratedIcon = iconData;
+                    } else {
+                        lastGeneratedIcon = null;
+                    }
+
+                    qrLabel.textContent = label || 'QR Code';
+                    qrSub.textContent = sub || 'Pronto para uso';
+                    lastGeneratedText = text;
+                    testContainer.innerHTML =
+                        `<div class="test-badge"><i class="fas fa-check-circle"></i> QR gerado com sucesso</div>`;
+
+                    // Adicionar ao histórico
+                    addToHistory(currentTab, text, label || text.substring(0, 40));
+
+                } catch (e) {
+                    qrContainer.innerHTML = `<div style="padding:20px;color:#b91c1c;">Erro: ${e.message}</div>`;
+                    qrLabel.textContent = 'Erro';
+                    qrSub.textContent = 'Verifique os dados';
+                    testContainer.innerHTML = '';
+                    lastGeneratedIcon = null;
+                }
+            }
+
+            // =============================================
+            // DOWNLOAD QR CODE
+            // =============================================
+            window.downloadQRCode = function(format) {
+                const qrElement = qrContainer.querySelector('canvas') || qrContainer.querySelector('img');
+                if (!qrElement) {
+                    showToast('⚠️ Nenhum QR Code para baixar.', 'warning');
+                    return;
+                }
+
+                try {
+                    let link = document.createElement('a');
+                    let extension = format === 'svg' ? 'svg' : (format === 'jpg' ? 'jpg' : 'png');
+                    let mimeType = format === 'jpg' ? 'image/jpeg' : (format === 'svg' ? 'image/svg+xml' : 'image/png');
+
+                    if (format === 'svg') {
+                        // Para SVG, usamos a abordagem do canvas para manter o ícone
+                        const canvas = document.createElement('canvas');
+                        const size = 190;
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+
+                        // Fundo
+                        ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
+                        ctx.fillRect(0, 0, size, size);
+
+                        // QR Code
+                        if (qrElement.tagName === 'CANVAS') {
+                            ctx.drawImage(qrElement, 0, 0, size, size);
+                        } else if (qrElement.tagName === 'IMG') {
+                            ctx.drawImage(qrElement, 0, 0, size, size);
+                        }
+
+                        // Ícone
+                        const overlay = qrContainer.querySelector('.qr-icon-overlay');
+                        if (overlay) {
+                            const iconElement = overlay.querySelector('i');
+                            if (iconElement) {
+                                const iconSize = 44;
+                                const iconX = (size - iconSize) / 2;
+                                const iconY = (size - iconSize) / 2;
+
+                                const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' :
+                                    'rgba(255,255,255,0.92)';
+                                ctx.fillStyle = bgColor;
+                                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                                ctx.shadowBlur = 8;
+                                ctx.beginPath();
+                                ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                                ctx.fill();
+                                ctx.shadowBlur = 0;
+
+                                ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' :
+                                    'rgba(0,0,0,0.08)';
+                                ctx.lineWidth = 2;
+                                ctx.beginPath();
+                                ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                                ctx.stroke();
+
+                                const iconColor = iconElement.style.color || '#2563eb';
+                                ctx.fillStyle = iconColor;
+                                ctx.font = '24px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+
+                                let iconName = '\uf0c1';
+                                const cls = iconElement.className;
+                                if (cls.includes('fa-whatsapp')) iconName = '\uf232';
+                                else if (cls.includes('fa-instagram')) iconName = '\uf16d';
+                                else if (cls.includes('fa-facebook')) iconName = '\uf09a';
+                                else if (cls.includes('fa-youtube')) iconName = '\uf167';
+                                else if (cls.includes('fa-wifi')) iconName = '\uf1eb';
+                                else if (cls.includes('fa-envelope')) iconName = '\uf0e0';
+                                else if (cls.includes('fa-phone')) iconName = '\uf095';
+                                else if (cls.includes('fa-link')) iconName = '\uf0c1';
+
+                                ctx.fillText(iconName, size / 2, size / 2);
+                            }
+                        }
+
+                        // Baixar como PNG (SVG não suporta ícones com fontes web facilmente)
+                        link.download = `qrcode.png`;
+                        link.href = canvas.toDataURL('image/png', 1.0);
+                        link.click();
+                        showToast('✅ QR Code baixado como PNG (com ícone)!', 'success');
+                        return;
+                    }
+
+                    // PNG/JPG
+                    const canvas = document.createElement('canvas');
+                    const size = 190;
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    if (format === 'jpg') {
+                        ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
+                        ctx.fillRect(0, 0, size, size);
+                    }
+
+                    if (qrElement.tagName === 'CANVAS') {
+                        ctx.drawImage(qrElement, 0, 0, size, size);
+                    } else if (qrElement.tagName === 'IMG') {
+                        ctx.drawImage(qrElement, 0, 0, size, size);
+                    }
+
+                    const overlay = qrContainer.querySelector('.qr-icon-overlay');
+                    if (overlay) {
+                        const iconElement = overlay.querySelector('i');
+                        if (iconElement) {
+                            const iconSize = 44;
+                            const iconX = (size - iconSize) / 2;
+                            const iconY = (size - iconSize) / 2;
+
+                            const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' : 'rgba(255,255,255,0.92)';
+                            ctx.fillStyle = bgColor;
+                            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                            ctx.shadowBlur = 8;
+                            ctx.beginPath();
+                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+
+                            ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                            ctx.stroke();
+
+                            const iconColor = iconElement.style.color || '#2563eb';
+                            ctx.fillStyle = iconColor;
+                            ctx.font = '24px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+
+                            let iconName = '\uf0c1';
+                            const cls = iconElement.className;
+                            if (cls.includes('fa-whatsapp')) iconName = '\uf232';
+                            else if (cls.includes('fa-instagram')) iconName = '\uf16d';
+                            else if (cls.includes('fa-facebook')) iconName = '\uf09a';
+                            else if (cls.includes('fa-youtube')) iconName = '\uf167';
+                            else if (cls.includes('fa-wifi')) iconName = '\uf1eb';
+                            else if (cls.includes('fa-envelope')) iconName = '\uf0e0';
+                            else if (cls.includes('fa-phone')) iconName = '\uf095';
+                            else if (cls.includes('fa-link')) iconName = '\uf0c1';
+
+                            ctx.fillText(iconName, size / 2, size / 2);
                         }
                     }
+
+                    link.download = `qrcode.${extension}`;
+                    link.href = canvas.toDataURL(mimeType, 1.0);
+                    link.click();
+                    showToast(`✅ QR Code baixado como ${format.toUpperCase()}!`, 'success');
+
+                } catch (error) {
+                    showToast('❌ Erro ao baixar: ' + error.message, 'error');
                 }
-            } catch (e) {
-                console.warn('Erro ao carregar Wi-Fi salvo:', e);
-            }
-            return false;
-        }
-
-        // --- Atualizar timestamp ---
-        function updateTimestamp() {
-            if (lastUpdateTime) {
-                const now = new Date();
-                const diffMs = now - lastUpdateTime;
-                const diffMin = Math.floor(diffMs / 60000);
-                const diffSec = Math.floor((diffMs % 60000) / 1000);
-                
-                let timeStr;
-                if (diffMin > 0) {
-                    timeStr = `${diffMin}m ${diffSec}s atrás`;
-                } else {
-                    timeStr = `${diffSec}s atrás`;
-                }
-                
-                wifiTimestamp.textContent = `Última atualização: ${timeStr}`;
-            } else {
-                wifiTimestamp.textContent = 'Última atualização: --';
-            }
-        }
-
-        // --- Mostrar modal de permissão ---
-        function showPermissionModal(device, ssid) {
-            pendingDevice = device;
-            document.getElementById('modalSsid').textContent = ssid || 'Café Wi-Fi';
-            document.getElementById('modalDeviceName').textContent = device.name;
-            document.getElementById('modalDeviceMac').textContent = device.mac || 'XX:XX:XX:XX:XX:XX';
-            document.getElementById('modalDeviceSignal').textContent = device.signal + '%';
-            permissionModal.classList.add('active');
-        }
-
-        // --- Aceitar conexão ---
-        window.approveConnection = function() {
-            if (pendingDevice) {
-                if (pendingDevice.blocked) {
-                    showNotification(`⛔ ${pendingDevice.name} está bloqueado e não pode conectar.`, 'error');
-                    pendingDevice = null;
-                    permissionModal.classList.remove('active');
-                    return;
-                }
-                
-                pendingDevice.status = 'connected';
-                pendingDevice.connectedAt = new Date().toISOString();
-                wifiDevices.push(pendingDevice);
-                saveWifiDevices(wifiDevices);
-                updateWifiDisplay();
-                
-                showNotification(`✅ ${pendingDevice.name} conectado à rede!`, 'success');
-                pendingDevice = null;
-            }
-            permissionModal.classList.remove('active');
-        };
-
-        // --- Negar conexão ---
-        window.rejectConnection = function() {
-            if (pendingDevice) {
-                showNotification(`❌ Conexão de ${pendingDevice.name} negada.`, 'error');
-                pendingDevice = null;
-            }
-            permissionModal.classList.remove('active');
-        };
-
-        // --- Notificação simples ---
-        function showNotification(message, type) {
-            const badge = document.createElement('div');
-            const isError = type === 'error';
-            const isWarning = type === 'warning';
-            
-            let bgColor;
-            if (isError) bgColor = 'var(--btn-danger)';
-            else if (isWarning) bgColor = 'var(--btn-warning)';
-            else bgColor = 'var(--btn-success)';
-            
-            badge.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 24px;
-                border-radius: 16px;
-                background: ${bgColor};
-                color: white;
-                font-weight: 500;
-                font-size: 14px;
-                z-index: 10000;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-                animation: fadeIn 0.3s ease;
-                max-width: 350px;
-            `;
-            badge.textContent = message;
-            document.body.appendChild(badge);
-            
-            setTimeout(() => {
-                badge.style.opacity = '0';
-                badge.style.transform = 'translateY(20px)';
-                badge.style.transition = 'all 0.3s ease';
-                setTimeout(() => badge.remove(), 300);
-            }, 3000);
-        }
-
-        // --- Bloquear/Desbloquear dispositivo ---
-        window.toggleBlockDevice = function(deviceId) {
-            const device = wifiDevices.find(d => d.id === deviceId);
-            if (!device) return;
-
-            if (device.blocked) {
-                if (confirm(`Deseja desbloquear "${device.name}"?`)) {
-                    device.blocked = false;
-                    device.status = 'idle';
-                    saveWifiDevices(wifiDevices);
-                    updateWifiDisplay();
-                    showNotification(`🔓 ${device.name} foi desbloqueado.`, 'success');
-                }
-            } else {
-                if (confirm(`Deseja bloquear "${device.name}" permanentemente da rede?`)) {
-                    device.blocked = true;
-                    device.status = 'blocked';
-                    saveWifiDevices(wifiDevices);
-                    updateWifiDisplay();
-                    showNotification(`🔒 ${device.name} foi bloqueado da rede.`, 'warning');
-                }
-            }
-        };
-
-        // --- Atualizar exibição dos dispositivos ---
-        function updateWifiDisplay() {
-            if (wifiDevices.length === 0) {
-                wifiDevicesContent.innerHTML = `
-                    <div style="color: var(--text-muted); font-size: 13px; padding: 4px 0;">
-                        <i class="fas fa-info-circle"></i> Nenhum dispositivo encontrado
-                    </div>
-                `;
-                return;
-            }
-
-            const connected = wifiDevices.filter(d => d.status === 'connected');
-            const blocked = wifiDevices.filter(d => d.blocked === true);
-            const total = wifiDevices.length;
-            
-            let html = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
-                    <span class="wifi-device-count">${connected.length} conectado${connected.length !== 1 ? 's' : ''}</span>
-                    <span style="font-size: 12px; color: var(--text-muted);">
-                        ${total} total · ${blocked.length} bloqueado${blocked.length !== 1 ? 's' : ''}
-                    </span>
-                </div>
-                <div class="wifi-devices-grid">
-            `;
-
-            wifiDevices.forEach(device => {
-                const isBlocked = device.blocked === true;
-                const isConnected = device.status === 'connected';
-                const isIdle = device.status === 'idle';
-                
-                let statusIcon;
-                let statusColor;
-                let statusText = '';
-                let itemClass = '';
-                
-                if (isBlocked) {
-                    statusIcon = 'fa-ban';
-                    statusColor = 'var(--btn-danger)';
-                    statusText = 'Bloqueado';
-                    itemClass = 'blocked';
-                } else if (isConnected) {
-                    statusIcon = 'fa-check-circle';
-                    statusColor = 'var(--btn-success)';
-                    statusText = 'Conectado';
-                } else {
-                    statusIcon = 'fa-clock';
-                    statusColor = 'var(--text-muted)';
-                    statusText = 'Ocioso';
-                }
-                
-                html += `
-                    <div class="wifi-device-item ${itemClass}">
-                        <div class="device-info">
-                            <i class="fas ${statusIcon}" style="color: ${statusColor};"></i>
-                            <span class="device-name">${device.name}</span>
-                            <span class="device-signal">${device.signal}%</span>
-                            ${isBlocked ? `<span class="blocked-badge-text">BLOQUEADO</span>` : ''}
-                        </div>
-                        <div class="device-actions">
-                            ${!isBlocked ? `
-                                ${isConnected ? `
-                                    <button class="btn btn-danger btn-small" onclick="disconnectDevice('${device.id}')" title="Desconectar">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                ` : `
-                                    <button class="btn btn-success btn-small" onclick="reconnectDevice('${device.id}')" title="Reconectar">
-                                        <i class="fas fa-plug"></i>
-                                    </button>
-                                `}
-                            ` : ''}
-                            <button class="btn ${isBlocked ? 'btn-success' : 'btn-warning'} btn-small" onclick="toggleBlockDevice('${device.id}')" title="${isBlocked ? 'Desbloquear' : 'Bloquear'}">
-                                <i class="fas ${isBlocked ? 'fa-unlock' : 'fa-lock'}"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            wifiDevicesContent.innerHTML = html;
-            updateTimestamp();
-        }
-
-        // --- Desconectar dispositivo ---
-        window.disconnectDevice = function(deviceId) {
-            const device = wifiDevices.find(d => d.id === deviceId);
-            if (device && device.status === 'connected') {
-                if (confirm(`Deseja realmente desconectar "${device.name}" da rede?`)) {
-                    device.status = 'idle';
-                    saveWifiDevices(wifiDevices);
-                    updateWifiDisplay();
-                    showNotification(`🔌 ${device.name} foi desconectado.`, 'error');
-                }
-            }
-        };
-
-        // --- Reconectar dispositivo ---
-        window.reconnectDevice = function(deviceId) {
-            const device = wifiDevices.find(d => d.id === deviceId);
-            if (device && device.status === 'idle') {
-                if (device.blocked) {
-                    showNotification(`⛔ ${device.name} está bloqueado. Desbloqueie primeiro.`, 'error');
-                    return;
-                }
-                const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
-                showPermissionModal(device, ssid);
-            }
-        };
-
-        // --- Simular nova conexão ---
-        function simulateNewConnection() {
-            if (!isWifiTabActive) return;
-            
-            if (Math.random() < 0.12 && wifiDevices.length < 15) {
-                const newDevice = {
-                    id: 'dev_new_' + Date.now(),
-                    name: deviceNames[Math.floor(Math.random() * deviceNames.length)] + ' (novo)',
-                    status: 'pending',
-                    signal: Math.floor(Math.random() * 40) + 60,
-                    mac: generateRandomMac(),
-                    connectedAt: null,
-                    blocked: false
-                };
-                
-                const ssid = document.getElementById('wifiSSID').value.trim() || 'Café Wi-Fi';
-                showPermissionModal(newDevice, ssid);
-            }
-        }
-
-        // --- Simular verificação de dispositivos Wi-Fi ---
-        function simulateWifiDevices() {
-            const count = Math.floor(Math.random() * 8) + 2;
-            wifiDevices = generateRandomDevices(count);
-            saveWifiDevices(wifiDevices);
-            updateWifiDisplay();
-            
-            const permissionEnabled = localStorage.getItem(PERMISSION_STORAGE_KEY) !== 'false';
-            if (permissionEnabled) {
-                setTimeout(simulateNewConnection, 1000);
-            }
-        }
-
-        // --- Atualizar dispositivos Wi-Fi ---
-        window.refreshWifiDevices = function() {
-            if (!isWifiTabActive) return;
-            
-            wifiDevicesContent.innerHTML = `
-                <div class="wifi-loading">
-                    <i class="fas fa-spinner"></i>
-                    <span>Verificando dispositivos...</span>
-                </div>
-            `;
-
-            setTimeout(() => {
-                simulateWifiDevices();
-            }, 800 + Math.random() * 600);
-        };
-
-        // --- Mostrar/esconder info Wi-Fi ---
-        function toggleWifiInfo(show) {
-            if (show) {
-                wifiInfoContainer.classList.remove('hidden');
-                isWifiTabActive = true;
-                
-                const hasSaved = loadWifiDevices();
-                if (hasSaved && wifiDevices.length > 0) {
-                    updateWifiDisplay();
-                    setTimeout(() => {
-                        if (isWifiTabActive) {
-                            refreshWifiDevices();
-                        }
-                    }, 2000);
-                } else {
-                    refreshWifiDevices();
-                }
-            } else {
-                wifiInfoContainer.classList.add('hidden');
-                isWifiTabActive = false;
-                permissionModal.classList.remove('active');
-            }
-        }
-
-        // --- Abas ---
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = {
-            url: document.getElementById('urlTab'),
-            whatsapp: document.getElementById('whatsappTab'),
-            instagram: document.getElementById('instagramTab'),
-            facebook: document.getElementById('facebookTab'),
-            youtube: document.getElementById('youtubeTab'),
-            wifi: document.getElementById('wifiTab'),
-        };
-
-        function getTabIdFromButton(btn) {
-            return btn.dataset.tab.replace('Tab', '');
-        }
-
-        function switchTab(tabId) {
-            Object.values(tabContents).forEach(el => el.classList.add('hidden'));
-            const map = {
-                'url': tabContents.url,
-                'whatsapp': tabContents.whatsapp,
-                'instagram': tabContents.instagram,
-                'facebook': tabContents.facebook,
-                'youtube': tabContents.youtube,
-                'wifi': tabContents.wifi,
             };
-            if (map[tabId]) map[tabId].classList.remove('hidden');
-            tabButtons.forEach(btn => {
-                btn.classList.toggle('active', getTabIdFromButton(btn) === tabId);
-            });
-            currentTab = tabId;
 
-            if (tabId === 'wifi') {
-                toggleWifiInfo(true);
+            // =============================================
+            // ROUND RECT POLYFILL
+            // =============================================
+            if (!CanvasRenderingContext2D.prototype.roundRect) {
+                CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                    if (r > w / 2) r = w / 2;
+                    if (r > h / 2) r = h / 2;
+                    this.moveTo(x + r, y);
+                    this.lineTo(x + w - r, y);
+                    this.quadraticCurveTo(x + w, y, x + w, y + r);
+                    this.lineTo(x + w, y + h - r);
+                    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                    this.lineTo(x + r, y + h);
+                    this.quadraticCurveTo(x, y + h, x, y + h - r);
+                    this.lineTo(x, y + r);
+                    this.quadraticCurveTo(x, y, x + r, y);
+                    return this;
+                };
+            }
+
+            // =============================================
+            // GET CURRENT DATA
+            // =============================================
+            function getCurrentData() {
+                switch (currentTab) {
+                    case 'url': {
+                        const url = document.getElementById('urlInput').value.trim();
+                        if (!url) return { error: 'URL inválida' };
+                        if (!url.match(/^https?:\/\/.+/)) {
+                            return { error: 'URL deve começar com http:// ou https://' };
+                        }
+                        return {
+                            text: url,
+                            label: 'URL',
+                            sub: url,
+                            icon: ICON_MAP.url
+                        };
+                    }
+                    case 'whatsapp': {
+                        let phone = document.getElementById('whatsappInput').value.trim();
+                        if (!phone) return { error: 'Número inválido' };
+                        phone = phone.replace(/\s/g, '');
+                        if (!phone.startsWith('55')) phone = '55' + phone;
+                        const waLink = `https://wa.me/${phone}`;
+                        return {
+                            text: waLink,
+                            label: 'WhatsApp',
+                            sub: `+${phone}`,
+                            icon: ICON_MAP.whatsapp
+                        };
+                    }
+                    case 'instagram': {
+                        const user = document.getElementById('instagramInput').value.trim();
+                        if (!user) return { error: 'Usuário inválido' };
+                        const url = `https://instagram.com/${user}`;
+                        return {
+                            text: url,
+                            label: `Instagram: @${user}`,
+                            sub: url,
+                            icon: ICON_MAP.instagram
+                        };
+                    }
+                    case 'facebook': {
+                        const page = document.getElementById('facebookInput').value.trim();
+                        if (!page) return { error: 'Página inválida' };
+                        const url = `https://facebook.com/${page}`;
+                        return {
+                            text: url,
+                            label: `Facebook: ${page}`,
+                            sub: url,
+                            icon: ICON_MAP.facebook
+                        };
+                    }
+                    case 'youtube': {
+                        const channel = document.getElementById('youtubeInput').value.trim();
+                        if (!channel) return { error: 'Canal inválido' };
+                        let url;
+                        if (channel.startsWith('@')) {
+                            url = `https://youtube.com/${channel}`;
+                        } else if (channel.startsWith('UC')) {
+                            url = `https://youtube.com/channel/${channel}`;
+                        } else {
+                            url = `https://youtube.com/@${channel}`;
+                        }
+                        return {
+                            text: url,
+                            label: `YouTube: ${channel}`,
+                            sub: url,
+                            icon: ICON_MAP.youtube
+                        };
+                    }
+                    case 'email': {
+                        const email = document.getElementById('emailInput').value.trim();
+                        if (!email) return { error: 'E-mail inválido' };
+                        if (!email.includes('@') || !email.includes('.')) {
+                            return { error: 'E-mail inválido' };
+                        }
+                        const subject = document.getElementById('emailSubject').value.trim();
+                        const body = document.getElementById('emailBody').value.trim();
+                        let mailto = `mailto:${email}`;
+                        const params = [];
+                        if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+                        if (body) params.push(`body=${encodeURIComponent(body)}`);
+                        if (params.length > 0) mailto += '?' + params.join('&');
+                        return {
+                            text: mailto,
+                            label: `E-mail: ${email}`,
+                            sub: subject || 'Sem assunto',
+                            icon: ICON_MAP.email
+                        };
+                    }
+                    case 'phone': {
+                        const phone = document.getElementById('phoneInput').value.trim();
+                        if (!phone) return { error: 'Número inválido' };
+                        const cleanPhone = phone.replace(/\s/g, '');
+                        return {
+                            text: `tel:${cleanPhone}`,
+                            label: `Telefone: ${cleanPhone}`,
+                            sub: `Ligar para ${cleanPhone}`,
+                            icon: ICON_MAP.phone
+                        };
+                    }
+                    case 'wifi': {
+                        const ssid = document.getElementById('wifiSSID').value.trim();
+                        const password = document.getElementById('wifiPassword').value.trim();
+                        const security = document.getElementById('wifiSecurity').value;
+                        if (!ssid) return { error: 'SSID obrigatório' };
+                        let wifiString = `WIFI:T:${security};S:${ssid};`;
+                        if (security !== 'nopass' && password) {
+                            wifiString += `P:${password};`;
+                        }
+                        wifiString += ';';
+                        return {
+                            text: wifiString,
+                            label: `Wi-Fi: ${ssid}`,
+                            sub: `Seg: ${security}`,
+                            icon: ICON_MAP.wifi
+                        };
+                    }
+                    default:
+                        return { error: 'Aba desconhecida' };
+                }
+            }
+
+            // =============================================
+            // ACTIONS
+            // =============================================
+            window.generateFromCurrentTab = function() {
+                const data = getCurrentData();
+                if (data.error) {
+                    generateQRCode('', 'Erro', data.error, null);
+                    showToast('⚠️ ' + data.error, 'warning');
+                    return;
+                }
+                generateQRCode(data.text, data.label, data.sub, data.icon);
+            };
+
+            window.testCurrentTab = function() {
+                const data = getCurrentData();
+                if (data.error) {
+                    showToast('⚠️ ' + data.error, 'warning');
+                    return;
+                }
+                if (!data.text) {
+                    showToast('⚠️ Nenhum dado para testar.', 'warning');
+                    return;
+                }
+
+                switch (currentTab) {
+                    case 'url':
+                    case 'instagram':
+                    case 'facebook':
+                    case 'youtube':
+                    case 'whatsapp':
+                    case 'email':
+                    case 'phone': {
+                        window.open(data.text, '_blank');
+                        showToast('✅ Abrindo link...', 'info');
+                        break;
+                    }
+                    case 'wifi': {
+                        showToast(`📶 Wi-Fi configurado: ${data.label}`, 'info');
+                        break;
+                    }
+                    default:
+                        showToast('ℹ️ Teste não implementado para esta aba.', 'info');
+                }
+            };
+
+            window.copyQRContent = function() {
+                if (!lastGeneratedText) {
+                    showToast('⚠️ Nenhum QR Code gerado.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(lastGeneratedText)
+                    .then(() => showToast('📋 Conteúdo copiado!', 'success'))
+                    .catch(() => showToast('❌ Erro ao copiar', 'error'));
+            };
+
+            window.togglePasswordVisibility = function() {
+                const input = document.getElementById('wifiPassword');
+                const icon = document.getElementById('wifiPasswordIcon');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    input.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+            };
+
+            // =============================================
+            // VALIDAÇÕES EM TEMPO REAL
+            // =============================================
+            document.getElementById('urlInput')?.addEventListener('input', function() {
+                const url = this.value.trim();
+                const isValid = url.match(/^https?:\/\/.+\..+/);
+                this.classList.toggle('valid', isValid);
+                this.classList.toggle('invalid', !isValid && url.length > 0);
+            });
+
+            document.getElementById('emailInput')?.addEventListener('input', function() {
+                const email = this.value.trim();
+                const isValid = email.includes('@') && email.includes('.');
+                this.classList.toggle('valid', isValid);
+                this.classList.toggle('invalid', !isValid && email.length > 0);
+            });
+
+            // =============================================
+            // INICIALIZAÇÃO
+            // =============================================
+            window.addEventListener('DOMContentLoaded', function() {
+                // Carregar tema
+                const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+                if (savedTheme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    currentTheme = 'dark';
+                    document.getElementById('themeLabel').textContent = 'Escuro';
+                    document.querySelector('#themeToggle i').className = 'fas fa-sun';
+                }
+
+                // Carregar histórico
+                loadHistory();
+                renderHistory();
+
+                // Carregar redes
                 loadSavedNetworks();
                 loadActiveNetwork();
-                renderNetworksList();
-                applyActiveNetwork();
-            } else {
-                toggleWifiInfo(false);
-                // Se não for Wi-Fi, gerar QR automaticamente
-                setTimeout(generateFromCurrentTab, 100);
-            }
-        }
 
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const tabId = getTabIdFromButton(this);
-                switchTab(tabId);
+                // Iniciar com URL
+                switchTab('url');
+                setTimeout(() => {
+                    generateFromCurrentTab();
+                }, 200);
+
+                // Intervalo para atualizar Wi-Fi
+                setInterval(() => {
+                    if (isWifiTabActive) {
+                        refreshWifiDevices();
+                    }
+                }, 30000);
+
+                // Atualizar timestamp
+                setInterval(() => {
+                    if (isWifiTabActive && lastUpdateTime) {
+                        updateTimestamp();
+                    }
+                }, 10000);
+
+                // Permissão padrão
+                if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
+                    localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
+                }
             });
-        });
 
-        // --- Tema Claro/Escuro ---
-        window.toggleTheme = function() {
-            const html = document.documentElement;
-            const themeToggle = document.getElementById('themeToggle');
-            const themeLabel = document.getElementById('themeLabel');
-            const icon = themeToggle.querySelector('i');
-            
-            if (currentTheme === 'light') {
-                html.setAttribute('data-theme', 'dark');
-                currentTheme = 'dark';
-                themeLabel.textContent = 'Escuro';
-                icon.className = 'fas fa-sun';
-            } else {
-                html.removeAttribute('data-theme');
-                currentTheme = 'light';
-                themeLabel.textContent = 'Claro';
-                icon.className = 'fas fa-moon';
-            }
-            if (lastGeneratedText) {
-                generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent, currentIcon);
-            }
-            localStorage.setItem('theme', currentTheme);
-        };
+            // =============================================
+            // EXPOSIÇÃO GLOBAL
+            // =============================================
+            window.loadSavedNetworks = loadSavedNetworks;
+            window.saveNetworks = saveNetworks;
+            window.renderNetworksList = renderNetworksList;
+            window.applyActiveNetwork = applyActiveNetwork;
+            window.generateQRCode = generateQRCode;
+            window.showToast = showToast;
 
-        // --- Criar overlay do ícone no QR Code ---
-        function createIconOverlay(iconClass, color) {
-            // Remove overlay existente
-            const existingOverlay = qrContainer.querySelector('.qr-icon-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-
-            // Se não houver ícone, retorna
-            if (!iconClass) return;
-
-            const overlay = document.createElement('div');
-            overlay.className = 'qr-icon-overlay';
-            
-            const icon = document.createElement('i');
-            icon.className = `fab ${iconClass}`;
-            if (color) {
-                icon.style.color = color;
-            }
-            // Se for ícone do Font Awesome (fas)
-            if (iconClass === 'fa-link' || iconClass === 'fa-wifi') {
-                icon.className = `fas ${iconClass}`;
-                if (color) {
-                    icon.style.color = color;
-                }
-            }
-            
-            overlay.appendChild(icon);
-            qrContainer.appendChild(overlay);
-        }
-
-        // --- Gerar QR Code ---
-        function generateQRCode(text, label, sub, iconData) {
-            qrContainer.innerHTML = '';
-            
-            if (!text) {
-                qrContainer.innerHTML = '<div style="padding: 30px; color: var(--text-muted);">Insira dados válidos</div>';
-                qrLabel.textContent = 'Aguardando dados';
-                qrSub.textContent = 'Preencha os campos e gere o QR';
-                testContainer.innerHTML = '';
-                currentIcon = null;
-                return;
-            }
-
-            try {
-                const isDark = currentTheme === 'dark';
-                new QRCode(qrContainer, {
-                    text: text,
-                    width: 180,
-                    height: 180,
-                    colorDark: isDark ? "#e8edf5" : "#121826",
-                    colorLight: isDark ? "#1a1d27" : "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                // Adicionar ícone central
-                if (iconData) {
-                    createIconOverlay(iconData.icon, iconData.color);
-                    currentIcon = iconData;
-                } else {
-                    currentIcon = null;
-                }
-
-                qrLabel.textContent = label || 'QR Code';
-                qrSub.textContent = sub || 'Pronto para uso';
-                lastGeneratedText = text;
-                testContainer.innerHTML = `<div class="test-badge"><i class="fas fa-check-circle"></i> QR gerado com sucesso</div>`;
-            } catch (e) {
-                qrContainer.innerHTML = `<div style="padding:20px;color:#b91c1c;">Erro: ${e.message}</div>`;
-                qrLabel.textContent = 'Erro';
-                qrSub.textContent = 'Verifique os dados';
-                testContainer.innerHTML = '';
-                currentIcon = null;
-            }
-        }
-
-        // --- Baixar QR Code (com ícone incluído) ---
-        window.downloadQRCode = function(format) {
-            const qrElement = qrContainer.querySelector('canvas') || qrContainer.querySelector('img');
-            if (!qrElement) {
-                alert('Nenhum QR Code para baixar. Gere um QR Code primeiro.');
-                return;
-            }
-
-            try {
-                let link = document.createElement('a');
-                let extension = format === 'jpg' ? 'jpg' : 'png';
-                let mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
-                
-                // Criar canvas com o ícone sobreposto
-                const canvas = document.createElement('canvas');
-                const size = 180;
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
-                
-                // Fundo para JPG
-                if (format === 'jpg') {
-                    ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
-                    ctx.fillRect(0, 0, size, size);
-                }
-                
-                // Desenhar o QR Code
-                if (qrElement.tagName === 'CANVAS') {
-                    ctx.drawImage(qrElement, 0, 0, size, size);
-                } else if (qrElement.tagName === 'IMG') {
-                    ctx.drawImage(qrElement, 0, 0, size, size);
-                }
-                
-                // Desenhar o ícone central se existir
-                const overlay = qrContainer.querySelector('.qr-icon-overlay');
-                if (overlay) {
-                    const iconElement = overlay.querySelector('i');
-                    if (iconElement) {
-                        // Criar um ícone renderizado no canvas
-                        const iconSize = 44;
-                        const iconX = (size - iconSize) / 2;
-                        const iconY = (size - iconSize) / 2;
-                        
-                        // Fundo do ícone (branco/escuro)
-                        const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' : 'rgba(255,255,255,0.92)';
-                        ctx.fillStyle = bgColor;
-                        ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                        ctx.shadowBlur = 8;
-                        ctx.beginPath();
-                        ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                        
-                        // Borda
-                        ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
-                        ctx.stroke();
-                        
-                        // Ícone
-                        const iconColor = iconElement.style.color || '#2563eb';
-                        const iconSizePx = 24;
-                        ctx.fillStyle = iconColor;
-                        ctx.font = `${iconSizePx}px "Font Awesome 6 Free", "Font Awesome 6 Brands"`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        
-                        // Extrair o nome do ícone
-                        let iconClass = iconElement.className;
-                        let iconName = '';
-                        if (iconClass.includes('fa-whatsapp')) iconName = '\uf232';
-                        else if (iconClass.includes('fa-instagram')) iconName = '\uf16d';
-                        else if (iconClass.includes('fa-facebook')) iconName = '\uf09a';
-                        else if (iconClass.includes('fa-youtube')) iconName = '\uf167';
-                        else if (iconClass.includes('fa-wifi')) iconName = '\uf1eb';
-                        else if (iconClass.includes('fa-link')) iconName = '\uf0c1';
-                        else iconName = '\uf0c1';
-                        
-                        ctx.fillText(iconName, size/2, size/2);
-                    }
-                }
-                
-                // Baixar
-                link.download = `qrcode.${extension}`;
-                link.href = canvas.toDataURL(mimeType, 1.0);
-                link.click();
-                
-            } catch (error) {
-                alert('Erro ao baixar o QR Code: ' + error.message);
-            }
-        };
-
-        // --- roundRect polyfill para canvas ---
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (r > w/2) r = w/2;
-                if (r > h/2) r = h/2;
-                this.moveTo(x + r, y);
-                this.lineTo(x + w - r, y);
-                this.quadraticCurveTo(x + w, y, x + w, y + r);
-                this.lineTo(x + w, y + h - r);
-                this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-                this.lineTo(x + r, y + h);
-                this.quadraticCurveTo(x, y + h, x, y + h - r);
-                this.lineTo(x, y + r);
-                this.quadraticCurveTo(x, y, x + r, y);
-                return this;
-            };
-        }
-
-        // --- Obter dados da aba atual ---
-        function getCurrentData() {
-            switch (currentTab) {
-                case 'url': {
-                    const url = document.getElementById('urlInput').value.trim();
-                    if (!url) return { error: 'URL inválida' };
-                    return { 
-                        text: url, 
-                        label: 'URL', 
-                        sub: url,
-                        icon: ICON_MAP.url
-                    };
-                }
-                case 'whatsapp': {
-                    let phone = document.getElementById('whatsappInput').value.trim();
-                    if (!phone) return { error: 'Número inválido' };
-                    phone = phone.replace(/\s/g, '');
-                    if (!phone.startsWith('55')) phone = '55' + phone;
-                    const waLink = `https://wa.me/${phone}`;
-                    return { 
-                        text: waLink, 
-                        label: 'WhatsApp', 
-                        sub: `+${phone}`,
-                        icon: ICON_MAP.whatsapp
-                    };
-                }
-                case 'instagram': {
-                    const user = document.getElementById('instagramInput').value.trim();
-                    if (!user) return { error: 'Usuário inválido' };
-                    const url = `https://instagram.com/${user}`;
-                    return { 
-                        text: url, 
-                        label: `Instagram: @${user}`, 
-                        sub: url,
-                        icon: ICON_MAP.instagram
-                    };
-                }
-                case 'facebook': {
-                    const page = document.getElementById('facebookInput').value.trim();
-                    if (!page) return { error: 'Página inválida' };
-                    const url = `https://facebook.com/${page}`;
-                    return { 
-                        text: url, 
-                        label: `Facebook: ${page}`, 
-                        sub: url,
-                        icon: ICON_MAP.facebook
-                    };
-                }
-                case 'youtube': {
-                    const channel = document.getElementById('youtubeInput').value.trim();
-                    if (!channel) return { error: 'Canal inválido' };
-                    let url;
-                    if (channel.startsWith('@')) {
-                        url = `https://youtube.com/${channel}`;
-                    } else if (channel.startsWith('UC')) {
-                        url = `https://youtube.com/channel/${channel}`;
-                    } else {
-                        url = `https://youtube.com/@${channel}`;
-                    }
-                    return { 
-                        text: url, 
-                        label: `YouTube: ${channel}`, 
-                        sub: url,
-                        icon: ICON_MAP.youtube
-                    };
-                }
-                case 'wifi': {
-                    const ssid = document.getElementById('wifiSSID').value.trim();
-                    const password = document.getElementById('wifiPassword').value.trim();
-                    const security = document.getElementById('wifiSecurity').value;
-                    if (!ssid) return { error: 'SSID obrigatório' };
-                    let wifiString = `WIFI:T:${security};S:${ssid};`;
-                    if (security !== 'nopass' && password) {
-                        wifiString += `P:${password};`;
-                    }
-                    wifiString += ';';
-                    return { 
-                        text: wifiString, 
-                        label: `Wi-Fi: ${ssid}`, 
-                        sub: `Seg: ${security}`,
-                        icon: ICON_MAP.wifi
-                    };
-                }
-                default: return { error: 'Aba desconhecida' };
-            }
-        }
-
-        // --- Gerar a partir da aba atual ---
-        window.generateFromCurrentTab = function() {
-            const data = getCurrentData();
-            if (data.error) {
-                generateQRCode('', 'Erro', data.error, null);
-                return;
-            }
-            generateQRCode(data.text, data.label, data.sub, data.icon);
-        };
-
-        // --- Testar ---
-        window.testCurrentTab = function() {
-            const data = getCurrentData();
-            if (data.error) {
-                alert(`Erro: ${data.error}`);
-                return;
-            }
-            if (!data.text) {
-                alert('Nenhum dado para testar.');
-                return;
-            }
-
-            switch (currentTab) {
-                case 'url':
-                case 'instagram':
-                case 'facebook':
-                case 'youtube':
-                case 'whatsapp': {
-                    window.open(data.text, '_blank');
-                    break;
-                }
-                case 'wifi': {
-                    alert(`Wi-Fi config:\n${data.text}\n\n(No desktop, use o leitor de QR para conectar)`);
-                    break;
-                }
-                default: alert('Teste não implementado para esta aba.');
-            }
-        };
-
-        // --- Inicialização ---
-        window.addEventListener('DOMContentLoaded', function() {
-            loadSavedNetworks();
-            loadActiveNetwork();
-            
-            switchTab('url');
-            setTimeout(() => {
-                generateFromCurrentTab();
-            }, 100);
-            
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                currentTheme = 'dark';
-                document.getElementById('themeLabel').textContent = 'Escuro';
-                document.querySelector('#themeToggle i').className = 'fas fa-sun';
-            }
-
-            setInterval(() => {
-                if (isWifiTabActive) {
-                    refreshWifiDevices();
-                }
-            }, 30000);
-
-            setInterval(() => {
-                if (isWifiTabActive && lastUpdateTime) {
-                    updateTimestamp();
-                }
-            }, 10000);
-
-            if (localStorage.getItem(PERMISSION_STORAGE_KEY) === null) {
-                localStorage.setItem(PERMISSION_STORAGE_KEY, 'true');
-            }
-        });
-
-        // Expor funções para o escopo global
-        window.loadSavedNetworks = loadSavedNetworks;
-        window.saveNetworks = saveNetworks;
-        window.renderNetworksList = renderNetworksList;
-        window.applyActiveNetwork = applyActiveNetwork;
-        window.generateQRCode = generateQRCode;
-
-    })();
-</script>
-
+        })();
+    </script>
 </body>
 </html>
