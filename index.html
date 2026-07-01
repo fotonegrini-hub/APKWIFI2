@@ -61,6 +61,10 @@
             --toast-bg: #1a1e2b;
             --toast-text: white;
             --radius: 16px;
+            --focus-ring: rgba(37, 99, 235, 0.3);
+            --error-color: #dc2626;
+            --qr-color: #121826;
+            --qr-bg-color: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -106,6 +110,10 @@
             --qr-overlay-border: rgba(255, 255, 255, 0.1);
             --toast-bg: #2a2f42;
             --toast-text: #e8edf5;
+            --focus-ring: rgba(59, 130, 246, 0.3);
+            --error-color: #ef4444;
+            --qr-color: #e8edf5;
+            --qr-bg-color: #1a1d27;
         }
 
         body {
@@ -267,6 +275,11 @@
             color: var(--text-primary);
         }
 
+        .tab-btn:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
         .tab-btn.active {
             background: var(--tab-active);
             box-shadow: 0 6px 14px var(--shadow-color), 0 2px 4px rgba(0, 0, 0, 0.02);
@@ -362,6 +375,13 @@
             min-height: 48px;
         }
 
+        .field-with-icon input:focus-visible,
+        .field-with-icon select:focus-visible,
+        .field-with-icon textarea:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
         .field-with-icon textarea {
             resize: vertical;
             min-height: 60px;
@@ -402,6 +422,14 @@
             font-size: 12px;
         }
 
+        .input-hint.error {
+            color: var(--error-color);
+        }
+
+        .input-hint.success {
+            color: var(--btn-success);
+        }
+
         /* ===== BUTTONS ===== */
         .btn-group {
             display: flex;
@@ -429,6 +457,11 @@
             flex: 1 1 auto;
             position: relative;
             overflow: hidden;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
         }
 
         .btn:active {
@@ -547,6 +580,12 @@
             }
         }
 
+        .shortcut-hint {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-left: 4px;
+        }
+
         /* ===== QR PANEL ===== */
         .qr-panel {
             display: flex;
@@ -564,7 +603,7 @@
         }
 
         #qrcode {
-            background: var(--qr-bg);
+            background: var(--qr-bg-color);
             padding: 18px;
             border-radius: 28px;
             box-shadow: 0 16px 30px var(--shadow-color);
@@ -575,18 +614,39 @@
             animation: qrPulse 0.6s ease;
         }
 
+        #qrcode.generating {
+            animation: qrPulse 0.5s ease;
+        }
+
+        #qrcode::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 28px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            background-size: 200% 100%;
+            animation: qrShine 2s infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #qrcode:hover::after {
+            opacity: 1;
+        }
+
         @keyframes qrPulse {
-            0% {
-                transform: scale(0.9);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes qrShine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
         }
 
         #qrcode img,
@@ -595,6 +655,28 @@
             width: 190px;
             height: 190px;
             border-radius: 16px;
+        }
+
+        .qr-progress {
+            width: 190px;
+            height: 4px;
+            background: var(--input-border);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .qr-progress.active {
+            display: block;
+        }
+
+        .qr-progress-bar {
+            height: 100%;
+            background: var(--btn-primary);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+            width: 0%;
         }
 
         .qr-icon-overlay {
@@ -724,6 +806,42 @@
             flex: 0 0 auto;
         }
 
+        /* ===== COLOR PICKER ===== */
+        .color-picker-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-picker-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker-item label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .color-picker-item input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            padding: 2px;
+            cursor: pointer;
+            background: var(--input-bg);
+        }
+
+        .color-picker-item input[type="color"]:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
         /* ===== WI-FI NETWORKS ===== */
         .wifi-networks-section {
             margin-bottom: 16px;
@@ -798,6 +916,15 @@
             font-size: 10px;
             flex: 0 0 auto;
             min-width: 20px;
+        }
+
+        .network-active-badge {
+            font-size: 11px;
+            color: var(--btn-success);
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .add-network-btn {
@@ -945,10 +1072,32 @@
             transition: var(--transition);
         }
 
+        .modal-input-group input:focus-visible,
+        .modal-input-group select:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
         .modal-input-group input:focus,
         .modal-input-group select:focus {
             border-color: var(--btn-primary);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+        }
+
+        /* ===== SHARE MODAL ===== */
+        .share-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .share-options .btn {
+            flex: 0 0 auto;
+            padding: 12px 20px;
+            font-size: 20px;
+            min-width: 56px;
         }
 
         /* ===== TOAST ===== */
@@ -977,6 +1126,8 @@
             font-weight: 500;
             border-left: 4px solid var(--btn-primary);
             transform-origin: bottom right;
+            position: relative;
+            overflow: hidden;
         }
 
         .toast.success {
@@ -1016,9 +1167,14 @@
             border-radius: 0 0 0 4px;
             transition: width 0.1s linear;
         }
-        .toast {
-            position: relative;
-            overflow: hidden;
+        .toast.success .toast-progress {
+            background: var(--btn-success);
+        }
+        .toast.error .toast-progress {
+            background: var(--btn-danger);
+        }
+        .toast.warning .toast-progress {
+            background: var(--btn-warning);
         }
 
         @keyframes slideUp {
@@ -1077,6 +1233,13 @@
                 width: 160px;
                 height: 160px;
             }
+            .color-picker-group {
+                gap: 8px;
+            }
+            .color-picker-item input[type="color"] {
+                width: 30px;
+                height: 30px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1126,6 +1289,11 @@
                 right: 16px;
                 bottom: 16px;
                 max-width: 100%;
+            }
+            .share-options .btn {
+                padding: 8px 14px;
+                font-size: 16px;
+                min-width: 44px;
             }
         }
 
@@ -1207,30 +1375,93 @@
             text-align: center;
             padding: 12px;
         }
+
+        /* ===== SKIP LINK ===== */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--btn-primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            z-index: 10002;
+            transition: top 0.3s;
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        /* ===== OFFLINE INDICATOR ===== */
+        .offline-indicator {
+            display: none;
+            background: var(--btn-warning);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .offline-indicator.visible {
+            display: inline-flex;
+        }
+
+        /* ===== KEYBOARD SHORTCUTS HINT ===== */
+        .keyboard-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .keyboard-hint kbd {
+            background: var(--tab-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--input-border);
+            font-family: monospace;
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- ===== SKIP LINK ===== -->
+    <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
+
     <!-- ===== APP ===== -->
-    <div class="app-container">
+    <div class="app-container" id="main-content" role="main">
         <!-- Header -->
         <div class="header-container">
             <h1>
-                <i class="fas fa-qrcode"></i>
+                <i class="fas fa-qrcode" aria-hidden="true"></i>
                 QR Code Pro
             </h1>
             <div class="header-actions">
-                <button class="btn-header" onclick="clearHistory()" title="Limpar histórico">
-                    <i class="fas fa-history"></i> Histórico
+                <span class="offline-indicator" id="offlineIndicator">
+                    <i class="fas fa-wifi-slash" aria-hidden="true"></i>
+                    Offline
+                </span>
+                <button class="btn-header" onclick="clearHistory()" title="Limpar histórico" aria-label="Limpar histórico">
+                    <i class="fas fa-history" aria-hidden="true"></i> Histórico
                 </button>
-                <button class="btn-header" onclick="exportData()" title="Exportar dados">
-                    <i class="fas fa-download"></i> Backup
+                <button class="btn-header" onclick="exportData()" title="Exportar dados" aria-label="Exportar dados">
+                    <i class="fas fa-download" aria-hidden="true"></i> Backup
                 </button>
-                <button class="btn-header" onclick="importData()" title="Importar dados">
-                    <i class="fas fa-upload"></i> Restaurar
+                <button class="btn-header" onclick="importData()" title="Importar dados" aria-label="Importar dados">
+                    <i class="fas fa-upload" aria-hidden="true"></i> Restaurar
                 </button>
-                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-                    <i class="fas fa-moon"></i>
+                <button class="btn-header" onclick="shareQRCode()" title="Compartilhar QR Code" aria-label="Compartilhar QR Code">
+                    <i class="fas fa-share-alt" aria-hidden="true"></i> Compartilhar
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" aria-label="Alternar tema">
+                    <i class="fas fa-moon" aria-hidden="true"></i>
                     <span id="themeLabel">Claro</span>
                 </button>
             </div>
@@ -1241,184 +1472,186 @@
             <!-- Left: Forms -->
             <div>
                 <!-- Tabs -->
-                <div class="tabs" id="tabHeaders">
-                    <button class="tab-btn active" data-tab="urlTab"><i class="fas fa-link"></i> URL</button>
-                    <button class="tab-btn" data-tab="whatsappTab"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button class="tab-btn" data-tab="instagramTab"><i class="fab fa-instagram"></i> Instagram</button>
-                    <button class="tab-btn" data-tab="facebookTab"><i class="fab fa-facebook"></i> Facebook</button>
-                    <button class="tab-btn" data-tab="youtubeTab"><i class="fab fa-youtube"></i> YouTube</button>
-                    <button class="tab-btn" data-tab="emailTab"><i class="fas fa-envelope"></i> E-mail</button>
-                    <button class="tab-btn" data-tab="phoneTab"><i class="fas fa-phone"></i> Telefone</button>
-                    <button class="tab-btn" data-tab="wifiTab"><i class="fas fa-wifi"></i> Wi-Fi <span class="badge-tab">●</span></button>
+                <div class="tabs" id="tabHeaders" role="tablist">
+                    <button class="tab-btn active" data-tab="urlTab" role="tab" aria-selected="true" aria-controls="urlTab"><i class="fas fa-link" aria-hidden="true"></i> URL</button>
+                    <button class="tab-btn" data-tab="whatsappTab" role="tab" aria-selected="false" aria-controls="whatsappTab"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>
+                    <button class="tab-btn" data-tab="instagramTab" role="tab" aria-selected="false" aria-controls="instagramTab"><i class="fab fa-instagram" aria-hidden="true"></i> Instagram</button>
+                    <button class="tab-btn" data-tab="facebookTab" role="tab" aria-selected="false" aria-controls="facebookTab"><i class="fab fa-facebook" aria-hidden="true"></i> Facebook</button>
+                    <button class="tab-btn" data-tab="youtubeTab" role="tab" aria-selected="false" aria-controls="youtubeTab"><i class="fab fa-youtube" aria-hidden="true"></i> YouTube</button>
+                    <button class="tab-btn" data-tab="emailTab" role="tab" aria-selected="false" aria-controls="emailTab"><i class="fas fa-envelope" aria-hidden="true"></i> E-mail</button>
+                    <button class="tab-btn" data-tab="phoneTab" role="tab" aria-selected="false" aria-controls="phoneTab"><i class="fas fa-phone" aria-hidden="true"></i> Telefone</button>
+                    <button class="tab-btn" data-tab="wifiTab" role="tab" aria-selected="false" aria-controls="wifiTab"><i class="fas fa-wifi" aria-hidden="true"></i> Wi-Fi <span class="badge-tab" aria-hidden="true">●</span></button>
                 </div>
 
                 <!-- URL -->
-                <div id="urlTab" class="tab-content">
+                <div id="urlTab" class="tab-content" role="tabpanel" aria-labelledby="urlTab">
                     <div class="input-group">
-                        <label><i class="fas fa-globe" style="margin-right: 6px;"></i> Endereço URL <span class="required">*</span></label>
+                        <label for="urlInput"><i class="fas fa-globe" style="margin-right: 6px;" aria-hidden="true"></i> Endereço URL <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-link"></i>
-                            <input type="url" id="urlInput" placeholder="https://exemplo.com" value="https://www.example.com">
+                            <i class="fas fa-link" aria-hidden="true"></i>
+                            <input type="url" id="urlInput" placeholder="https://exemplo.com" value="https://www.example.com" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> Insira uma URL válida com http:// ou https://</div>
+                        <div class="input-hint" id="urlHint"><i class="fas fa-info-circle" aria-hidden="true"></i> Insira uma URL válida com http:// ou https://</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- WhatsApp -->
-                <div id="whatsappTab" class="tab-content hidden">
+                <div id="whatsappTab" class="tab-content hidden" role="tabpanel" aria-labelledby="whatsappTab">
                     <div class="input-group">
-                        <label><i class="fab fa-whatsapp"></i> Telefone (55 + DDD + Número) <span class="required">*</span></label>
+                        <label for="whatsappInput"><i class="fab fa-whatsapp" aria-hidden="true"></i> Telefone (55 + DDD + Número) <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" id="whatsappInput" placeholder="5511999999999" value="5511999999999">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <input type="tel" id="whatsappInput" placeholder="5511999999999" value="5511999999999" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> Formato: 55 + DDD + número (ex: 5511999999999)</div>
+                        <div class="input-hint" id="whatsappHint"><i class="fas fa-info-circle" aria-hidden="true"></i> Formato: 55 + DDD + 9 dígitos (ex: 5511999999999)</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- Instagram -->
-                <div id="instagramTab" class="tab-content hidden">
+                <div id="instagramTab" class="tab-content hidden" role="tabpanel" aria-labelledby="instagramTab">
                     <div class="input-group">
-                        <label><i class="fab fa-instagram"></i> Perfil do Instagram <span class="required">*</span></label>
+                        <label for="instagramInput"><i class="fab fa-instagram" aria-hidden="true"></i> Perfil do Instagram <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-at"></i>
-                            <input type="text" id="instagramInput" placeholder="usuario" value="exemplo_perfil">
+                            <i class="fas fa-at" aria-hidden="true"></i>
+                            <input type="text" id="instagramInput" placeholder="usuario" value="exemplo_perfil" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> Nome de usuário sem o @</div>
+                        <div class="input-hint"><i class="fas fa-info-circle" aria-hidden="true"></i> Nome de usuário sem o @</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- Facebook -->
-                <div id="facebookTab" class="tab-content hidden">
+                <div id="facebookTab" class="tab-content hidden" role="tabpanel" aria-labelledby="facebookTab">
                     <div class="input-group">
-                        <label><i class="fab fa-facebook"></i> Perfil/Página do Facebook <span class="required">*</span></label>
+                        <label for="facebookInput"><i class="fab fa-facebook" aria-hidden="true"></i> Perfil/Página do Facebook <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="facebookInput" placeholder="usuario ou pagina" value="exemplo.pagina">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                            <input type="text" id="facebookInput" placeholder="usuario ou pagina" value="exemplo.pagina" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> Nome de usuário ou ID da página</div>
+                        <div class="input-hint"><i class="fas fa-info-circle" aria-hidden="true"></i> Nome de usuário ou ID da página</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- YouTube -->
-                <div id="youtubeTab" class="tab-content hidden">
+                <div id="youtubeTab" class="tab-content hidden" role="tabpanel" aria-labelledby="youtubeTab">
                     <div class="input-group">
-                        <label><i class="fab fa-youtube"></i> Canal do YouTube <span class="required">*</span></label>
+                        <label for="youtubeInput"><i class="fab fa-youtube" aria-hidden="true"></i> Canal do YouTube <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-play"></i>
-                            <input type="text" id="youtubeInput" placeholder="ID do canal ou @usuario" value="UCExemplo123">
+                            <i class="fas fa-play" aria-hidden="true"></i>
+                            <input type="text" id="youtubeInput" placeholder="ID do canal ou @usuario" value="UCExemplo123" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> ID do canal (UC...) ou @nome</div>
+                        <div class="input-hint"><i class="fas fa-info-circle" aria-hidden="true"></i> ID do canal (UC...) ou @nome</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- E-mail -->
-                <div id="emailTab" class="tab-content hidden">
+                <div id="emailTab" class="tab-content hidden" role="tabpanel" aria-labelledby="emailTab">
                     <div class="input-group">
-                        <label><i class="fas fa-envelope"></i> Endereço de E-mail <span class="required">*</span></label>
+                        <label for="emailInput"><i class="fas fa-envelope" aria-hidden="true"></i> Endereço de E-mail <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="emailInput" placeholder="contato@exemplo.com" value="contato@exemplo.com">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <input type="email" id="emailInput" placeholder="contato@exemplo.com" value="contato@exemplo.com" aria-required="true">
                         </div>
+                        <div class="input-hint" id="emailHint"><i class="fas fa-info-circle" aria-hidden="true"></i> Insira um endereço de e-mail válido</div>
                     </div>
                     <div class="input-group">
-                        <label>Assunto (opcional)</label>
+                        <label for="emailSubject">Assunto (opcional)</label>
                         <div class="field-with-icon">
-                            <i class="fas fa-tag"></i>
+                            <i class="fas fa-tag" aria-hidden="true"></i>
                             <input type="text" id="emailSubject" placeholder="Assunto do e-mail" value="Olá!">
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>Corpo (opcional)</label>
+                        <label for="emailBody">Corpo (opcional)</label>
                         <div class="field-with-icon">
-                            <i class="fas fa-align-left"></i>
+                            <i class="fas fa-align-left" aria-hidden="true"></i>
                             <textarea id="emailBody" placeholder="Mensagem do e-mail" rows="2">Gostaria de entrar em contato.</textarea>
                         </div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- Telefone -->
-                <div id="phoneTab" class="tab-content hidden">
+                <div id="phoneTab" class="tab-content hidden" role="tabpanel" aria-labelledby="phoneTab">
                     <div class="input-group">
-                        <label><i class="fas fa-phone"></i> Número de Telefone <span class="required">*</span></label>
+                        <label for="phoneInput"><i class="fas fa-phone" aria-hidden="true"></i> Número de Telefone <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" id="phoneInput" placeholder="5511999999999" value="5511999999999">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <input type="tel" id="phoneInput" placeholder="5511999999999" value="5511999999999" aria-required="true">
                         </div>
-                        <div class="input-hint"><i class="fas fa-info-circle"></i> Formato: 55 + DDD + número (ex: 5511999999999)</div>
+                        <div class="input-hint" id="phoneHint"><i class="fas fa-info-circle" aria-hidden="true"></i> Formato: 55 + DDD + 8 ou 9 dígitos (ex: 5511999999999)</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
                     </div>
                 </div>
 
                 <!-- Wi-Fi -->
-                <div id="wifiTab" class="tab-content hidden">
+                <div id="wifiTab" class="tab-content hidden" role="tabpanel" aria-labelledby="wifiTab">
                     <div class="wifi-networks-section">
                         <label style="font-size: 14px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
-                            <i class="fas fa-network-wired"></i> Redes Salvas
+                            <i class="fas fa-network-wired" aria-hidden="true"></i> Redes Salvas
                         </label>
                         <div class="wifi-networks-list" id="wifiNetworksList">
                             <!-- Redes serão inseridas aqui via JavaScript -->
                         </div>
-                        <button class="add-network-btn" onclick="showAddNetworkModal()">
-                            <i class="fas fa-plus-circle"></i> Adicionar Nova Rede
+                        <button class="add-network-btn" onclick="showAddNetworkModal()" aria-label="Adicionar nova rede Wi-Fi">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i> Adicionar Nova Rede
                         </button>
                     </div>
 
                     <div class="input-group">
-                        <label>Nome da Rede (SSID) <span class="required">*</span></label>
+                        <label for="wifiSSID">Nome da Rede (SSID) <span class="required" aria-hidden="true">*</span></label>
                         <div class="field-with-icon">
-                            <i class="fas fa-network-wired"></i>
-                            <input type="text" id="wifiSSID" placeholder="Minha Rede" value="Café Wi-Fi">
+                            <i class="fas fa-network-wired" aria-hidden="true"></i>
+                            <input type="text" id="wifiSSID" placeholder="Minha Rede" value="Café Wi-Fi" aria-required="true">
                         </div>
+                        <div class="input-hint" id="wifiSSIDHint"><i class="fas fa-info-circle" aria-hidden="true"></i> SSID não pode conter ; : , caracteres</div>
                     </div>
                     <div class="input-group">
-                        <label>Senha</label>
+                        <label for="wifiPassword">Senha</label>
                         <div class="field-with-icon" style="position:relative;">
-                            <i class="fas fa-key"></i>
+                            <i class="fas fa-key" aria-hidden="true"></i>
                             <input type="password" id="wifiPassword" placeholder="senha123" value="12345678">
-                            <button onclick="togglePasswordVisibility()" style="position:absolute;right:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;z-index:2;">
-                                <i class="fas fa-eye" id="wifiPasswordIcon"></i>
+                            <button onclick="togglePasswordVisibility()" style="position:absolute;right:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;z-index:2;" aria-label="Alternar visibilidade da senha">
+                                <i class="fas fa-eye" id="wifiPasswordIcon" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>Tipo de Segurança</label>
+                        <label for="wifiSecurity">Tipo de Segurança</label>
                         <div class="field-with-icon">
-                            <i class="fas fa-shield-alt"></i>
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
                             <select id="wifiSecurity">
                                 <option value="WPA" selected>WPA/WPA2</option>
                                 <option value="WEP">WEP</option>
@@ -1427,29 +1660,51 @@
                         </div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode"></i> Gerar QR</button>
-                        <button class="btn btn-success" onclick="saveCurrentNetwork()"><i class="fas fa-save"></i> Salvar Rede</button>
-                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play"></i> Testar</button>
-                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn btn-primary" onclick="generateFromCurrentTab()"><i class="fas fa-qrcode" aria-hidden="true"></i> Gerar QR <span class="shortcut-hint">(Ctrl+Enter)</span></button>
+                        <button class="btn btn-success" onclick="saveCurrentNetwork()"><i class="fas fa-save" aria-hidden="true"></i> Salvar Rede</button>
+                        <button class="btn btn-outline" onclick="testCurrentTab()"><i class="fas fa-play" aria-hidden="true"></i> Testar</button>
+                        <button class="btn btn-outline" onclick="copyQRContent()"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Customização de Cores -->
+                <div style="margin-top: 16px; border-top: 1px solid var(--input-border); padding-top: 16px;">
+                    <label style="font-size: 13px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 8px;">
+                        <i class="fas fa-palette" aria-hidden="true"></i> Personalizar Cores do QR Code
+                    </label>
+                    <div class="color-picker-group">
+                        <div class="color-picker-item">
+                            <label for="qrColor">Frente</label>
+                            <input type="color" id="qrColor" value="#121826" onchange="updateQRColors()">
+                        </div>
+                        <div class="color-picker-item">
+                            <label for="qrBgColor">Fundo</label>
+                            <input type="color" id="qrBgColor" value="#ffffff" onchange="updateQRColors()">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Footer info -->
                 <div style="margin-top: 20px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 18px; transition: var(--transition);">
-                    <i class="fas fa-lightbulb" style="margin-right: 8px;"></i> Clique em <strong>Gerar QR</strong> para atualizar o código. Use <strong>Testar</strong> para abrir/visualizar.
+                    <i class="fas fa-lightbulb" style="margin-right: 8px;" aria-hidden="true"></i> Clique em <strong>Gerar QR</strong> para atualizar o código. Use <strong>Testar</strong> para abrir/visualizar.
                 </div>
 
                 <!-- Histórico -->
                 <div style="margin-top: 16px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);"><i class="fas fa-history"></i> Histórico</span>
-                        <button onclick="clearHistory()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">
-                            <i class="fas fa-trash-alt"></i> Limpar
+                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);"><i class="fas fa-history" aria-hidden="true"></i> Histórico</span>
+                        <button onclick="clearHistory()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;" aria-label="Limpar histórico">
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i> Limpar
                         </button>
                     </div>
-                    <div class="history-list" id="historyList">
-                        <div class="history-empty">Nenhum QR Code gerado ainda</div>
+                    <div class="history-list" id="historyList" role="list">
+                        <div class="history-empty" role="listitem">Nenhum QR Code gerado ainda</div>
                     </div>
+                </div>
+
+                <!-- Keyboard Shortcuts -->
+                <div class="keyboard-hint">
+                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd> Gerar QR &nbsp;·&nbsp; <kbd>Ctrl</kbd> + <kbd>D</kbd> Baixar PNG
                 </div>
             </div>
 
@@ -1458,26 +1713,32 @@
                 <div id="qrcode" style="position: relative;">
                     <!-- O overlay do ícone será inserido aqui via JavaScript -->
                 </div>
+                <div class="qr-progress" id="qrProgress">
+                    <div class="qr-progress-bar" id="qrProgressBar" style="width: 0%;"></div>
+                </div>
                 <div class="qr-label" id="qrLabel">QR Code gerado</div>
                 <div class="qr-sub" id="qrSub">Aguardando ação</div>
 
                 <div class="qr-actions">
-                    <button class="btn btn-outline btn-sm" onclick="copyQRContent()" title="Copiar conteúdo">
-                        <i class="fas fa-copy"></i> Copiar
+                    <button class="btn btn-outline btn-sm" onclick="copyQRContent()" title="Copiar conteúdo" aria-label="Copiar conteúdo do QR Code">
+                        <i class="fas fa-copy" aria-hidden="true"></i> Copiar
                     </button>
-                    <button class="btn btn-outline btn-sm" onclick="downloadQRCode('svg')" title="Baixar SVG">
-                        <i class="fas fa-file-code"></i> SVG
+                    <button class="btn btn-outline btn-sm" onclick="downloadQRCode('svg')" title="Baixar SVG" aria-label="Baixar QR Code como SVG">
+                        <i class="fas fa-file-code" aria-hidden="true"></i> SVG
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="shareQRCode()" title="Compartilhar" aria-label="Compartilhar QR Code">
+                        <i class="fas fa-share-alt" aria-hidden="true"></i>
                     </button>
                 </div>
 
                 <div id="testButtonContainer"></div>
 
                 <div class="download-container" id="downloadContainer">
-                    <button class="btn btn-download" onclick="downloadQRCode('png')">
-                        <i class="fas fa-download"></i> PNG
+                    <button class="btn btn-download" onclick="downloadQRCode('png')" aria-label="Baixar QR Code como PNG">
+                        <i class="fas fa-download" aria-hidden="true"></i> PNG
                     </button>
-                    <button class="btn btn-download" onclick="downloadQRCode('jpg')">
-                        <i class="fas fa-download"></i> JPG
+                    <button class="btn btn-download" onclick="downloadQRCode('jpg')" aria-label="Baixar QR Code como JPG">
+                        <i class="fas fa-download" aria-hidden="true"></i> JPG
                     </button>
                 </div>
             </div>
@@ -1485,24 +1746,24 @@
     </div>
 
     <!-- ===== MODAL ADICIONAR REDE ===== -->
-    <div class="modal-overlay" id="addNetworkModal">
+    <div class="modal-overlay" id="addNetworkModal" role="dialog" aria-modal="true" aria-labelledby="addNetworkModalTitle">
         <div class="modal-content">
             <div class="modal-icon">
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
             </div>
-            <h2>Adicionar Nova Rede Wi-Fi</h2>
+            <h2 id="addNetworkModalTitle">Adicionar Nova Rede Wi-Fi</h2>
             <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Salve uma nova rede para gerenciar dispositivos conectados.</p>
 
             <div class="modal-input-group">
-                <label>Nome da Rede (SSID) <span style="color: var(--btn-danger);">*</span></label>
-                <input type="text" id="newNetworkSSID" placeholder="Ex: Minha Rede 5G">
+                <label for="newNetworkSSID">Nome da Rede (SSID) <span style="color: var(--btn-danger);" aria-hidden="true">*</span></label>
+                <input type="text" id="newNetworkSSID" placeholder="Ex: Minha Rede 5G" aria-required="true">
             </div>
             <div class="modal-input-group">
-                <label>Senha</label>
+                <label for="newNetworkPassword">Senha</label>
                 <input type="text" id="newNetworkPassword" placeholder="Digite a senha da rede">
             </div>
             <div class="modal-input-group">
-                <label>Tipo de Segurança</label>
+                <label for="newNetworkSecurity">Tipo de Segurança</label>
                 <select id="newNetworkSecurity">
                     <option value="WPA" selected>WPA/WPA2</option>
                     <option value="WEP">WEP</option>
@@ -1512,17 +1773,17 @@
 
             <div class="modal-actions">
                 <button class="btn btn-reject" onclick="closeAddNetworkModal()">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-times" aria-hidden="true"></i> Cancelar
                 </button>
                 <button class="btn btn-approve" onclick="saveNewNetwork()">
-                    <i class="fas fa-save"></i> Salvar Rede
+                    <i class="fas fa-save" aria-hidden="true"></i> Salvar Rede
                 </button>
             </div>
         </div>
     </div>
 
     <!-- ===== TOAST CONTAINER ===== -->
-    <div class="toast-container" id="toastContainer"></div>
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
 
     <script>
         (function() {
@@ -1537,6 +1798,8 @@
             const testContainer = document.getElementById('testButtonContainer');
             const wifiNetworksList = document.getElementById('wifiNetworksList');
             const historyList = document.getElementById('historyList');
+            const qrProgress = document.getElementById('qrProgress');
+            const qrProgressBar = document.getElementById('qrProgressBar');
 
             let currentTab = 'url';
             let currentTheme = 'light';
@@ -1545,11 +1808,45 @@
             let savedNetworks = [];
             let activeNetworkId = null;
             let qrHistory = [];
+            let qrCache = new Map();
 
             const NETWORKS_STORAGE_KEY = 'wifi_networks_saved';
             const ACTIVE_NETWORK_KEY = 'wifi_active_network';
             const HISTORY_STORAGE_KEY = 'qr_history_saved';
             const THEME_STORAGE_KEY = 'theme';
+            const QR_COLOR_KEY = 'qr_color';
+            const QR_BG_COLOR_KEY = 'qr_bg_color';
+
+            // =============================================
+            // CRIPTOGRAFIA SIMPLES PARA SENHAS
+            // =============================================
+            function encryptPassword(password) {
+                if (!password) return '';
+                try {
+                    return btoa(encodeURIComponent(password));
+                } catch {
+                    return password;
+                }
+            }
+
+            function decryptPassword(encrypted) {
+                if (!encrypted) return '';
+                try {
+                    return decodeURIComponent(atob(encrypted));
+                } catch {
+                    return encrypted;
+                }
+            }
+
+            // =============================================
+            // ESCAPE HTML (XSS Protection)
+            // =============================================
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
 
             // =============================================
             // ICONE MAP
@@ -1572,6 +1869,7 @@
                 const container = document.getElementById('toastContainer');
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
+                toast.setAttribute('role', 'alert');
 
                 const icons = {
                     success: 'fa-check-circle',
@@ -1581,9 +1879,9 @@
                 };
 
                 toast.innerHTML = `
-                    <i class="fas ${icons[type] || icons.info} toast-icon"></i>
-                    <span>${message}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                    <i class="fas ${icons[type] || icons.info} toast-icon" aria-hidden="true"></i>
+                    <span>${escapeHtml(message)}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()" aria-label="Fechar notificação"><i class="fas fa-times" aria-hidden="true"></i></button>
                     <div class="toast-progress" style="width:100%;"></div>
                 `;
 
@@ -1611,6 +1909,48 @@
                 }, duration);
 
                 return toast;
+            }
+
+            // =============================================
+            // OFFLINE DETECTION
+            // =============================================
+            function updateOfflineStatus() {
+                const indicator = document.getElementById('offlineIndicator');
+                if (!navigator.onLine) {
+                    indicator.classList.add('visible');
+                } else {
+                    indicator.classList.remove('visible');
+                }
+            }
+
+            window.addEventListener('online', updateOfflineStatus);
+            window.addEventListener('offline', updateOfflineStatus);
+
+            // =============================================
+            // VALIDAÇÕES
+            // =============================================
+            function validateWhatsApp(phone) {
+                const clean = phone.replace(/\D/g, '');
+                // 55 + 2 dígitos DDD + 8 ou 9 dígitos
+                return /^55[1-9]{2}[0-9]{8,9}$/.test(clean);
+            }
+
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            function validateUrl(url) {
+                try {
+                    new URL(url);
+                    return true;
+                } catch {
+                    return false;
+                }
+            }
+
+            function validateSSID(ssid) {
+                // SSID não pode conter ; : , caracteres que quebram o formato Wi-Fi
+                return !/[;:,]/.test(ssid) && ssid.length > 0 && ssid.length <= 32;
             }
 
             // =============================================
@@ -1649,20 +1989,21 @@
 
             function renderHistory() {
                 if (qrHistory.length === 0) {
-                    historyList.innerHTML = '<div class="history-empty">Nenhum QR Code gerado ainda</div>';
+                    historyList.innerHTML = '<div class="history-empty" role="listitem">Nenhum QR Code gerado ainda</div>';
                     return;
                 }
 
                 let html = '';
                 qrHistory.forEach(item => {
                     const typeLabel = item.type.toUpperCase();
+                    const safeLabel = escapeHtml(item.label);
                     html += `
-                        <div class="history-item" onclick="loadHistoryItem('${item.id}')">
+                        <div class="history-item" onclick="loadHistoryItem('${item.id}')" role="listitem" tabindex="0" onkeydown="if(event.key==='Enter') loadHistoryItem('${item.id}')">
                             <span class="h-type">${typeLabel}</span>
-                            <span class="h-content">${item.label}</span>
+                            <span class="h-content">${safeLabel}</span>
                             <div class="h-actions">
-                                <button class="btn btn-outline btn-small" onclick="event.stopPropagation();deleteHistoryItem('${item.id}')" title="Remover">
-                                    <i class="fas fa-times"></i>
+                                <button class="btn btn-outline btn-small" onclick="event.stopPropagation();deleteHistoryItem('${item.id}')" title="Remover" aria-label="Remover item do histórico">
+                                    <i class="fas fa-times" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -1704,10 +2045,15 @@
             // BACKUP / EXPORT / IMPORT
             // =============================================
             window.exportData = function() {
+                const networksForExport = savedNetworks.map(n => ({
+                    ...n,
+                    password: n.password ? encryptPassword(n.password) : ''
+                }));
+
                 const data = {
                     version: '1.0',
                     exportedAt: new Date().toISOString(),
-                    networks: savedNetworks,
+                    networks: networksForExport,
                     activeNetwork: activeNetworkId,
                     history: qrHistory
                 };
@@ -1726,6 +2072,7 @@
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.json';
+                input.setAttribute('aria-label', 'Selecionar arquivo de backup');
                 input.onchange = function(e) {
                     const file = e.target.files[0];
                     if (!file) return;
@@ -1733,8 +2080,16 @@
                     reader.onload = function(ev) {
                         try {
                             const data = JSON.parse(ev.target.result);
+
+                            if (!data.networks || !Array.isArray(data.networks)) {
+                                throw new Error('Arquivo inválido: "networks" ausente ou não é um array');
+                            }
+
                             if (data.networks) {
-                                savedNetworks = data.networks;
+                                savedNetworks = data.networks.map(n => ({
+                                    ...n,
+                                    password: n.password ? decryptPassword(n.password) : ''
+                                }));
                                 saveNetworks();
                             }
                             if (data.activeNetwork) {
@@ -1765,7 +2120,11 @@
                 try {
                     const saved = localStorage.getItem(NETWORKS_STORAGE_KEY);
                     if (saved) {
-                        savedNetworks = JSON.parse(saved);
+                        const parsed = JSON.parse(saved);
+                        savedNetworks = parsed.map(n => ({
+                            ...n,
+                            password: n.password ? decryptPassword(n.password) : ''
+                        }));
                         return true;
                     }
                 } catch (e) { console.warn('Erro ao carregar redes salvas:', e); }
@@ -1782,7 +2141,11 @@
 
             function saveNetworks() {
                 try {
-                    localStorage.setItem(NETWORKS_STORAGE_KEY, JSON.stringify(savedNetworks));
+                    const networksToSave = savedNetworks.map(n => ({
+                        ...n,
+                        password: n.password ? encryptPassword(n.password) : ''
+                    }));
+                    localStorage.setItem(NETWORKS_STORAGE_KEY, JSON.stringify(networksToSave));
                 } catch (e) { console.warn('Erro ao salvar redes:', e); }
             }
 
@@ -1828,7 +2191,7 @@
                 if (savedNetworks.length === 0) {
                     wifiNetworksList.innerHTML = `
                         <div style="color: var(--text-muted); font-size: 13px; padding: 8px; text-align: center;">
-                            <i class="fas fa-info-circle"></i> Nenhuma rede salva
+                            <i class="fas fa-info-circle" aria-hidden="true"></i> Nenhuma rede salva
                         </div>
                     `;
                     return;
@@ -1837,17 +2200,18 @@
                 let html = '';
                 savedNetworks.forEach(network => {
                     const isActive = network.id === activeNetworkId;
+                    const safeSSID = escapeHtml(network.ssid);
                     html += `
-                        <div class="wifi-network-item ${isActive ? 'active' : ''}" onclick="selectNetwork('${network.id}')">
+                        <div class="wifi-network-item ${isActive ? 'active' : ''}" onclick="selectNetwork('${network.id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') selectNetwork('${network.id}')">
                             <div class="network-info">
-                                <i class="fas fa-wifi"></i>
-                                <span class="network-name">${network.ssid}</span>
+                                <i class="fas fa-wifi" aria-hidden="true"></i>
+                                <span class="network-name">${safeSSID}</span>
                                 <span class="network-details">${network.security}</span>
-                                ${isActive ? `<span class="network-active-badge"><i class="fas fa-check"></i> ativa</span>` : ''}
+                                ${isActive ? `<span class="network-active-badge"><i class="fas fa-check" aria-hidden="true"></i> ativa</span>` : ''}
                             </div>
                             <div class="network-actions">
-                                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNetwork('${network.id}')" title="Excluir rede">
-                                    <i class="fas fa-trash"></i>
+                                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNetwork('${network.id}')" title="Excluir rede" aria-label="Excluir rede ${safeSSID}">
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -1873,6 +2237,11 @@
 
                 if (!ssid) {
                     showToast('⚠️ Por favor, insira o nome da rede (SSID).', 'warning');
+                    return;
+                }
+
+                if (!validateSSID(ssid)) {
+                    showToast('⚠️ SSID inválido. Não use ; : , e tenha entre 1-32 caracteres.', 'warning');
                     return;
                 }
 
@@ -1909,6 +2278,7 @@
                 document.getElementById('newNetworkPassword').value = '';
                 document.getElementById('newNetworkSecurity').value = 'WPA';
                 addNetworkModal.classList.add('active');
+                document.getElementById('newNetworkSSID').focus();
             };
 
             window.closeAddNetworkModal = function() {
@@ -1922,6 +2292,11 @@
 
                 if (!ssid) {
                     showToast('⚠️ Por favor, insira o nome da rede (SSID).', 'warning');
+                    return;
+                }
+
+                if (!validateSSID(ssid)) {
+                    showToast('⚠️ SSID inválido. Não use ; : , e tenha entre 1-32 caracteres.', 'warning');
                     return;
                 }
 
@@ -1974,6 +2349,37 @@
             };
 
             // =============================================
+            // CORES DO QR CODE
+            // =============================================
+            function loadQRColors() {
+                try {
+                    const color = localStorage.getItem(QR_COLOR_KEY);
+                    const bgColor = localStorage.getItem(QR_BG_COLOR_KEY);
+                    if (color) document.getElementById('qrColor').value = color;
+                    if (bgColor) document.getElementById('qrBgColor').value = bgColor;
+                } catch (e) { /* ignorar */ }
+            }
+
+            function saveQRColors() {
+                try {
+                    const color = document.getElementById('qrColor').value;
+                    const bgColor = document.getElementById('qrBgColor').value;
+                    localStorage.setItem(QR_COLOR_KEY, color);
+                    localStorage.setItem(QR_BG_COLOR_KEY, bgColor);
+                    document.documentElement.style.setProperty('--qr-color', color);
+                    document.documentElement.style.setProperty('--qr-bg-color', bgColor);
+                } catch (e) { /* ignorar */ }
+            }
+
+            window.updateQRColors = function() {
+                saveQRColors();
+                if (lastGeneratedText) {
+                    generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent, lastGeneratedIcon);
+                }
+                showToast('🎨 Cores atualizadas!', 'info');
+            };
+
+            // =============================================
             // TABS
             // =============================================
             const tabButtons = document.querySelectorAll('.tab-btn');
@@ -2006,7 +2412,9 @@
                 };
                 if (map[tabId]) map[tabId].classList.remove('hidden');
                 tabButtons.forEach(btn => {
-                    btn.classList.toggle('active', getTabIdFromButton(btn) === tabId);
+                    const isActive = getTabIdFromButton(btn) === tabId;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
                 });
                 currentTab = tabId;
 
@@ -2024,6 +2432,13 @@
                 btn.addEventListener('click', function(e) {
                     const tabId = getTabIdFromButton(this);
                     switchTab(tabId);
+                });
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const tabId = getTabIdFromButton(this);
+                        switchTab(tabId);
+                    }
                 });
             });
 
@@ -2052,6 +2467,38 @@
                 }
                 localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
             };
+
+            function detectTheme() {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+                if (!savedTheme && prefersDark) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    currentTheme = 'dark';
+                    document.getElementById('themeLabel').textContent = 'Escuro';
+                    document.querySelector('#themeToggle i').className = 'fas fa-sun';
+                }
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem(THEME_STORAGE_KEY)) {
+                    const theme = e.matches ? 'dark' : 'light';
+                    if (theme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        currentTheme = 'dark';
+                        document.getElementById('themeLabel').textContent = 'Escuro';
+                        document.querySelector('#themeToggle i').className = 'fas fa-sun';
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                        currentTheme = 'light';
+                        document.getElementById('themeLabel').textContent = 'Claro';
+                        document.querySelector('#themeToggle i').className = 'fas fa-moon';
+                    }
+                    if (lastGeneratedText) {
+                        generateQRCode(lastGeneratedText, qrLabel.textContent, qrSub.textContent, lastGeneratedIcon);
+                    }
+                }
+            });
 
             // =============================================
             // QR CODE GENERATION
@@ -2083,6 +2530,34 @@
                 qrContainer.appendChild(overlay);
             }
 
+            function showProgress(progress) {
+                qrProgress.classList.add('active');
+                qrProgressBar.style.width = progress + '%';
+                if (progress >= 100) {
+                    setTimeout(() => {
+                        qrProgress.classList.remove('active');
+                        qrProgressBar.style.width = '0%';
+                    }, 300);
+                }
+            }
+
+            function getCachedQR(text) {
+                const key = `${text}_${currentTheme}_${document.getElementById('qrColor').value}_${document.getElementById('qrBgColor').value}`;
+                if (qrCache.has(key)) {
+                    return qrCache.get(key);
+                }
+                return null;
+            }
+
+            function setCachedQR(text, data) {
+                const key = `${text}_${currentTheme}_${document.getElementById('qrColor').value}_${document.getElementById('qrBgColor').value}`;
+                qrCache.set(key, data);
+                if (qrCache.size > 20) {
+                    const firstKey = qrCache.keys().next().value;
+                    qrCache.delete(firstKey);
+                }
+            }
+
             function generateQRCode(text, label, sub, iconData) {
                 qrContainer.innerHTML = '';
 
@@ -2096,16 +2571,43 @@
                     return;
                 }
 
+                // Verificar cache
+                const cached = getCachedQR(text);
+                if (cached) {
+                    qrContainer.innerHTML = cached;
+                    if (iconData) {
+                        createIconOverlay(iconData);
+                        lastGeneratedIcon = iconData;
+                    } else {
+                        lastGeneratedIcon = null;
+                    }
+                    qrLabel.textContent = label || 'QR Code';
+                    qrSub.textContent = sub || 'Pronto para uso';
+                    lastGeneratedText = text;
+                    testContainer.innerHTML =
+                        `<div class="test-badge"><i class="fas fa-check-circle" aria-hidden="true"></i> QR gerado (cache)</div>`;
+                    addToHistory(currentTab, text, label || text.substring(0, 40));
+                    showProgress(100);
+                    return;
+                }
+
                 try {
                     const isDark = currentTheme === 'dark';
+                    const colorDark = document.getElementById('qrColor')?.value || (isDark ? '#e8edf5' : '#121826');
+                    const colorLight = document.getElementById('qrBgColor')?.value || (isDark ? '#1a1d27' : '#ffffff');
+
+                    showProgress(30);
+
                     new QRCode(qrContainer, {
                         text: text,
                         width: 190,
                         height: 190,
-                        colorDark: isDark ? "#e8edf5" : "#121826",
-                        colorLight: isDark ? "#1a1d27" : "#ffffff",
+                        colorDark: colorDark,
+                        colorLight: colorLight,
                         correctLevel: QRCode.CorrectLevel.H
                     });
+
+                    showProgress(80);
 
                     if (iconData) {
                         createIconOverlay(iconData);
@@ -2114,22 +2616,81 @@
                         lastGeneratedIcon = null;
                     }
 
+                    // Adicionar classe de animação
+                    qrContainer.classList.add('generating');
+                    setTimeout(() => qrContainer.classList.remove('generating'), 500);
+
                     qrLabel.textContent = label || 'QR Code';
                     qrSub.textContent = sub || 'Pronto para uso';
                     lastGeneratedText = text;
                     testContainer.innerHTML =
-                        `<div class="test-badge"><i class="fas fa-check-circle"></i> QR gerado com sucesso</div>`;
+                        `<div class="test-badge"><i class="fas fa-check-circle" aria-hidden="true"></i> QR gerado com sucesso</div>`;
+
+                    // Cache do QR gerado
+                    setCachedQR(text, qrContainer.innerHTML);
 
                     addToHistory(currentTab, text, label || text.substring(0, 40));
+                    showProgress(100);
 
                 } catch (e) {
-                    qrContainer.innerHTML = `<div style="padding:20px;color:#b91c1c;">Erro: ${e.message}</div>`;
+                    qrContainer.innerHTML = `<div style="padding:20px;color:#b91c1c;">Erro: ${escapeHtml(e.message)}</div>`;
                     qrLabel.textContent = 'Erro';
                     qrSub.textContent = 'Verifique os dados';
                     testContainer.innerHTML = '';
                     lastGeneratedIcon = null;
+                    showToast('❌ Erro ao gerar QR Code: ' + e.message, 'error');
+                    showProgress(100);
                 }
             }
+
+            // =============================================
+            // SHARE QR CODE
+            // =============================================
+            window.shareQRCode = async function() {
+                if (!lastGeneratedText) {
+                    showToast('⚠️ Nenhum QR Code para compartilhar.', 'warning');
+                    return;
+                }
+
+                const canvas = qrContainer.querySelector('canvas');
+                if (!canvas) {
+                    showToast('⚠️ Nenhum QR Code para compartilhar.', 'warning');
+                    return;
+                }
+
+                // Verificar se a API de compartilhamento está disponível
+                if (navigator.share) {
+                    try {
+                        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                        const file = new File([blob], 'qrcode.png', { type: 'image/png' });
+
+                        await navigator.share({
+                            title: 'QR Code',
+                            text: lastGeneratedText,
+                            files: [file]
+                        });
+                        showToast('✅ QR Code compartilhado!', 'success');
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            // Fallback: copiar link
+                            try {
+                                await navigator.clipboard.writeText(lastGeneratedText);
+                                showToast('📋 Conteúdo copiado! Compartilhe como preferir.', 'success');
+                            } catch {
+                                showToast('❌ Erro ao compartilhar', 'error');
+                            }
+                        }
+                    }
+                } else {
+                    // Fallback para navegadores sem suporte
+                    try {
+                        await navigator.clipboard.writeText(lastGeneratedText);
+                        showToast('📋 Conteúdo copiado! Compartilhe como preferir.', 'success');
+                    } catch {
+                        showToast('❌ Navegador não suporta compartilhamento nativo.', 'warning');
+                    }
+                }
+            };
 
             // =============================================
             // DOWNLOAD QR CODE
@@ -2146,118 +2707,57 @@
                     let extension = format === 'svg' ? 'svg' : (format === 'jpg' ? 'jpg' : 'png');
                     let mimeType = format === 'jpg' ? 'image/jpeg' : (format === 'svg' ? 'image/svg+xml' : 'image/png');
 
-                    if (format === 'svg') {
-                        const canvas = document.createElement('canvas');
-                        const size = 190;
-                        canvas.width = size;
-                        canvas.height = size;
-                        const ctx = canvas.getContext('2d');
-
-                        ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
-                        ctx.fillRect(0, 0, size, size);
-
-                        if (qrElement.tagName === 'CANVAS') {
-                            ctx.drawImage(qrElement, 0, 0, size, size);
-                        } else if (qrElement.tagName === 'IMG') {
-                            ctx.drawImage(qrElement, 0, 0, size, size);
-                        }
-
-                        const overlay = qrContainer.querySelector('.qr-icon-overlay');
-                        if (overlay) {
-                            const iconElement = overlay.querySelector('i');
-                            if (iconElement) {
-                                const iconSize = 44;
-                                const iconX = (size - iconSize) / 2;
-                                const iconY = (size - iconSize) / 2;
-
-                                const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' :
-                                    'rgba(255,255,255,0.92)';
-                                ctx.fillStyle = bgColor;
-                                ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                                ctx.shadowBlur = 8;
-                                ctx.beginPath();
-                                ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
-                                ctx.fill();
-                                ctx.shadowBlur = 0;
-
-                                ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' :
-                                    'rgba(0,0,0,0.08)';
-                                ctx.lineWidth = 2;
-                                ctx.beginPath();
-                                ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
-                                ctx.stroke();
-
-                                const iconColor = iconElement.style.color || '#2563eb';
-                                ctx.fillStyle = iconColor;
-                                ctx.font = '24px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'middle';
-
-                                let iconName = '\uf0c1';
-                                const cls = iconElement.className;
-                                if (cls.includes('fa-whatsapp')) iconName = '\uf232';
-                                else if (cls.includes('fa-instagram')) iconName = '\uf16d';
-                                else if (cls.includes('fa-facebook')) iconName = '\uf09a';
-                                else if (cls.includes('fa-youtube')) iconName = '\uf167';
-                                else if (cls.includes('fa-wifi')) iconName = '\uf1eb';
-                                else if (cls.includes('fa-envelope')) iconName = '\uf0e0';
-                                else if (cls.includes('fa-phone')) iconName = '\uf095';
-                                else if (cls.includes('fa-link')) iconName = '\uf0c1';
-
-                                ctx.fillText(iconName, size / 2, size / 2);
-                            }
-                        }
-
-                        link.download = `qrcode.png`;
-                        link.href = canvas.toDataURL('image/png', 1.0);
-                        link.click();
-                        showToast('✅ QR Code baixado como PNG (com ícone)!', 'success');
-                        return;
-                    }
-
+                    // Aumentar resolução para melhor qualidade
+                    const size = 400;
                     const canvas = document.createElement('canvas');
-                    const size = 190;
                     canvas.width = size;
                     canvas.height = size;
                     const ctx = canvas.getContext('2d');
 
-                    if (format === 'jpg') {
-                        ctx.fillStyle = currentTheme === 'dark' ? '#1a1d27' : '#ffffff';
-                        ctx.fillRect(0, 0, size, size);
-                    }
+                    // Fundo com margem
+                    const margin = 20;
+                    const qrSize = size - (margin * 2);
+                    const bgColor = document.getElementById('qrBgColor')?.value || (currentTheme === 'dark' ? '#1a1d27' :
+                        '#ffffff');
 
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, size, size);
+
+                    // Desenhar QR com margem
                     if (qrElement.tagName === 'CANVAS') {
-                        ctx.drawImage(qrElement, 0, 0, size, size);
+                        ctx.drawImage(qrElement, margin, margin, qrSize, qrSize);
                     } else if (qrElement.tagName === 'IMG') {
-                        ctx.drawImage(qrElement, 0, 0, size, size);
+                        ctx.drawImage(qrElement, margin, margin, qrSize, qrSize);
                     }
 
+                    // Adicionar ícone no centro
                     const overlay = qrContainer.querySelector('.qr-icon-overlay');
                     if (overlay) {
                         const iconElement = overlay.querySelector('i');
                         if (iconElement) {
-                            const iconSize = 44;
+                            const iconSize = 64;
                             const iconX = (size - iconSize) / 2;
                             const iconY = (size - iconSize) / 2;
 
-                            const bgColor = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' : 'rgba(255,255,255,0.92)';
-                            ctx.fillStyle = bgColor;
+                            const bgColorOverlay = currentTheme === 'dark' ? 'rgba(26,29,39,0.92)' :
+                                'rgba(255,255,255,0.92)';
+                            ctx.fillStyle = bgColorOverlay;
                             ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                            ctx.shadowBlur = 8;
+                            ctx.shadowBlur = 12;
                             ctx.beginPath();
-                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 16);
                             ctx.fill();
                             ctx.shadowBlur = 0;
 
                             ctx.strokeStyle = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
                             ctx.lineWidth = 2;
                             ctx.beginPath();
-                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 12);
+                            ctx.roundRect(iconX, iconY, iconSize, iconSize, 16);
                             ctx.stroke();
 
                             const iconColor = iconElement.style.color || '#2563eb';
                             ctx.fillStyle = iconColor;
-                            ctx.font = '24px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
+                            ctx.font = '36px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
                             ctx.textAlign = 'center';
                             ctx.textBaseline = 'middle';
 
@@ -2314,9 +2814,12 @@
                     case 'url': {
                         const url = document.getElementById('urlInput').value.trim();
                         if (!url) return { error: 'URL inválida' };
-                        if (!url.match(/^https?:\/\/.+/)) {
+                        if (!validateUrl(url)) {
                             return { error: 'URL deve começar com http:// ou https://' };
                         }
+                        document.getElementById('urlHint').className = 'input-hint success';
+                        document.getElementById('urlHint').innerHTML =
+                            '<i class="fas fa-check-circle" aria-hidden="true"></i> URL válida';
                         return {
                             text: url,
                             label: 'URL',
@@ -2329,6 +2832,15 @@
                         if (!phone) return { error: 'Número inválido' };
                         phone = phone.replace(/\s/g, '');
                         if (!phone.startsWith('55')) phone = '55' + phone;
+                        if (!validateWhatsApp(phone)) {
+                            document.getElementById('whatsappHint').className = 'input-hint error';
+                            document.getElementById('whatsappHint').innerHTML =
+                                '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> Formato inválido. Use 55 + DDD + 9 dígitos (ex: 5511999999999)';
+                            return { error: 'Número inválido. Use 55 + DDD + 9 dígitos' };
+                        }
+                        document.getElementById('whatsappHint').className = 'input-hint success';
+                        document.getElementById('whatsappHint').innerHTML =
+                            '<i class="fas fa-check-circle" aria-hidden="true"></i> Número válido';
                         const waLink = `https://wa.me/${phone}`;
                         return {
                             text: waLink,
@@ -2380,9 +2892,15 @@
                     case 'email': {
                         const email = document.getElementById('emailInput').value.trim();
                         if (!email) return { error: 'E-mail inválido' };
-                        if (!email.includes('@') || !email.includes('.')) {
+                        if (!validateEmail(email)) {
+                            document.getElementById('emailHint').className = 'input-hint error';
+                            document.getElementById('emailHint').innerHTML =
+                                '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> E-mail inválido';
                             return { error: 'E-mail inválido' };
                         }
+                        document.getElementById('emailHint').className = 'input-hint success';
+                        document.getElementById('emailHint').innerHTML =
+                            '<i class="fas fa-check-circle" aria-hidden="true"></i> E-mail válido';
                         const subject = document.getElementById('emailSubject').value.trim();
                         const body = document.getElementById('emailBody').value.trim();
                         let mailto = `mailto:${email}`;
@@ -2401,6 +2919,15 @@
                         const phone = document.getElementById('phoneInput').value.trim();
                         if (!phone) return { error: 'Número inválido' };
                         const cleanPhone = phone.replace(/\s/g, '');
+                        if (!validateWhatsApp(cleanPhone)) {
+                            document.getElementById('phoneHint').className = 'input-hint error';
+                            document.getElementById('phoneHint').innerHTML =
+                                '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> Número inválido. Use 55 + DDD + 8/9 dígitos';
+                            return { error: 'Número inválido' };
+                        }
+                        document.getElementById('phoneHint').className = 'input-hint success';
+                        document.getElementById('phoneHint').innerHTML =
+                            '<i class="fas fa-check-circle" aria-hidden="true"></i> Número válido';
                         return {
                             text: `tel:${cleanPhone}`,
                             label: `Telefone: ${cleanPhone}`,
@@ -2412,7 +2939,19 @@
                         const ssid = document.getElementById('wifiSSID').value.trim();
                         const password = document.getElementById('wifiPassword').value.trim();
                         const security = document.getElementById('wifiSecurity').value;
+
                         if (!ssid) return { error: 'SSID obrigatório' };
+
+                        if (!validateSSID(ssid)) {
+                            document.getElementById('wifiSSIDHint').className = 'input-hint error';
+                            document.getElementById('wifiSSIDHint').innerHTML =
+                                '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> SSID inválido. Não use ; : , e tenha entre 1-32 caracteres';
+                            return { error: 'SSID inválido' };
+                        }
+                        document.getElementById('wifiSSIDHint').className = 'input-hint success';
+                        document.getElementById('wifiSSIDHint').innerHTML =
+                            '<i class="fas fa-check-circle" aria-hidden="true"></i> SSID válido';
+
                         let wifiString = `WIFI:T:${security};S:${ssid};`;
                         if (security !== 'nopass' && password) {
                             wifiString += `P:${password};`;
@@ -2498,21 +3037,125 @@
             };
 
             // =============================================
+            // KEYBOARD SHORTCUTS
+            // =============================================
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Enter = Gerar QR
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    generateFromCurrentTab();
+                    showToast('⌨️ QR Code gerado!', 'success');
+                }
+                // Ctrl+D = Download PNG
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    downloadQRCode('png');
+                }
+            });
+
+            // =============================================
             // VALIDAÇÕES EM TEMPO REAL
             // =============================================
             document.getElementById('urlInput')?.addEventListener('input', function() {
                 const url = this.value.trim();
-                const isValid = url.match(/^https?:\/\/.+\..+/);
+                const isValid = validateUrl(url);
                 this.classList.toggle('valid', isValid);
                 this.classList.toggle('invalid', !isValid && url.length > 0);
+                const hint = document.getElementById('urlHint');
+                if (isValid && url.length > 0) {
+                    hint.className = 'input-hint success';
+                    hint.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> URL válida';
+                } else if (url.length > 0) {
+                    hint.className = 'input-hint error';
+                    hint.innerHTML = '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> URL inválida';
+                } else {
+                    hint.className = 'input-hint';
+                    hint.innerHTML = '<i class="fas fa-info-circle" aria-hidden="true"></i> Insira uma URL válida com http:// ou https://';
+                }
             });
 
             document.getElementById('emailInput')?.addEventListener('input', function() {
                 const email = this.value.trim();
-                const isValid = email.includes('@') && email.includes('.');
+                const isValid = validateEmail(email);
                 this.classList.toggle('valid', isValid);
                 this.classList.toggle('invalid', !isValid && email.length > 0);
+                const hint = document.getElementById('emailHint');
+                if (isValid && email.length > 0) {
+                    hint.className = 'input-hint success';
+                    hint.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> E-mail válido';
+                } else if (email.length > 0) {
+                    hint.className = 'input-hint error';
+                    hint.innerHTML = '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> E-mail inválido';
+                } else {
+                    hint.className = 'input-hint';
+                    hint.innerHTML = '<i class="fas fa-info-circle" aria-hidden="true"></i> Insira um endereço de e-mail válido';
+                }
             });
+
+            document.getElementById('whatsappInput')?.addEventListener('input', function() {
+                const phone = this.value.trim().replace(/\s/g, '');
+                const isValid = validateWhatsApp(phone);
+                this.classList.toggle('valid', isValid);
+                this.classList.toggle('invalid', !isValid && phone.length > 0);
+                const hint = document.getElementById('whatsappHint');
+                if (isValid && phone.length > 0) {
+                    hint.className = 'input-hint success';
+                    hint.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> Número válido';
+                } else if (phone.length > 0) {
+                    hint.className = 'input-hint error';
+                    hint.innerHTML =
+                        '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> Formato inválido. Use 55 + DDD + 9 dígitos';
+                } else {
+                    hint.className = 'input-hint';
+                    hint.innerHTML = '<i class="fas fa-info-circle" aria-hidden="true"></i> Formato: 55 + DDD + 9 dígitos (ex: 5511999999999)';
+                }
+            });
+
+            document.getElementById('phoneInput')?.addEventListener('input', function() {
+                const phone = this.value.trim().replace(/\s/g, '');
+                const isValid = validateWhatsApp(phone);
+                this.classList.toggle('valid', isValid);
+                this.classList.toggle('invalid', !isValid && phone.length > 0);
+                const hint = document.getElementById('phoneHint');
+                if (isValid && phone.length > 0) {
+                    hint.className = 'input-hint success';
+                    hint.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> Número válido';
+                } else if (phone.length > 0) {
+                    hint.className = 'input-hint error';
+                    hint.innerHTML =
+                        '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> Número inválido. Use 55 + DDD + 8/9 dígitos';
+                } else {
+                    hint.className = 'input-hint';
+                    hint.innerHTML = '<i class="fas fa-info-circle" aria-hidden="true"></i> Formato: 55 + DDD + 8 ou 9 dígitos (ex: 5511999999999)';
+                }
+            });
+
+            document.getElementById('wifiSSID')?.addEventListener('input', function() {
+                const ssid = this.value.trim();
+                const isValid = validateSSID(ssid);
+                this.classList.toggle('valid', isValid);
+                this.classList.toggle('invalid', !isValid && ssid.length > 0);
+                const hint = document.getElementById('wifiSSIDHint');
+                if (isValid && ssid.length > 0) {
+                    hint.className = 'input-hint success';
+                    hint.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> SSID válido';
+                } else if (ssid.length > 0) {
+                    hint.className = 'input-hint error';
+                    hint.innerHTML = '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> SSID inválido. Não use ; : , e tenha entre 1-32 caracteres';
+                } else {
+                    hint.className = 'input-hint';
+                    hint.innerHTML = '<i class="fas fa-info-circle" aria-hidden="true"></i> SSID não pode conter ; : , caracteres';
+                }
+            });
+
+            // =============================================
+            // SERVICE WORKER REGISTRATION
+            // =============================================
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(() => console.log('Service Worker registrado com sucesso'))
+                    .catch((err) => console.log('Erro ao registrar Service Worker:', err));
+            }
 
             // =============================================
             // INICIALIZAÇÃO
@@ -2524,6 +3167,8 @@
                     currentTheme = 'dark';
                     document.getElementById('themeLabel').textContent = 'Escuro';
                     document.querySelector('#themeToggle i').className = 'fas fa-sun';
+                } else {
+                    detectTheme();
                 }
 
                 loadHistory();
@@ -2531,11 +3176,35 @@
 
                 loadSavedNetworks();
                 loadActiveNetwork();
+                loadQRColors();
+
+                updateOfflineStatus();
 
                 switchTab('url');
                 setTimeout(() => {
                     generateFromCurrentTab();
                 }, 200);
+            });
+
+            // =============================================
+            // FECHAR MODAL COM ESC
+            // =============================================
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('addNetworkModal');
+                    if (modal.classList.contains('active')) {
+                        closeAddNetworkModal();
+                    }
+                }
+            });
+
+            // =============================================
+            // FECHAR MODAL CLICANDO FORA
+            // =============================================
+            document.getElementById('addNetworkModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAddNetworkModal();
+                }
             });
 
             // =============================================
